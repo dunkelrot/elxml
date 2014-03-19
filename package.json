@@ -1,0 +1,21 @@
+{
+  "name": "elxml",
+  "description": "minimalistic excel ooxml export",
+  "homepage": "",
+  "repository": "",
+  "version": "0.0.1",
+  "author":"Arndt Teinert <arndt.teinertgmx.de>",
+  "main":"./excel.js",
+  "dependencies": {
+    "xmlbuilder":"*",
+    "node-zip":"*"  
+  },
+  "keywords": [
+    "excel",
+    "xml",
+    "ooxml",
+    "simpel"
+  ],
+  "contributors": [
+  ]
+}
