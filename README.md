@@ -3,6 +3,7 @@ elxml
 
 A minimalistic Excel OOXML writer.
 The main purpose is to create simple Excel files via JavaScript. The current implementation supports
+
 1. Multiple sheets
 2. Creation of rows and cells
 3. Column width definition
