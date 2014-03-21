@@ -3,9 +3,9 @@
   "description": "minimalistic excel ooxml export",
   "homepage": "https://github.com/dunkelrot/elxml",
   "repository": "git://github.com/dunkelrot/elxml",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author":"Arndt Teinert <arndt.teinertgmx.de>",
-  "main":"./excel.js",
+  "main":"./elxml.js",
   "dependencies": {
     "xmlbuilder":"*",
     "node-zip":"*",
