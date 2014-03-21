@@ -43,3 +43,49 @@ Last step is to save the workbook:
 wb.save("test.01.xlsx");
 ```
 
+### Extended usages
+
+
+#### Number formats
+
+The above example creates an Excel file with a date cell but without a proper number format.
+
+To apply the number format to the cell we have to create a cell style. Cell styles are based on 
+a default cell style which defines the number format, fill, borders and the font for those cells
+which don't use any cell style. 
+In elxml the default is: Calibri with a size of 11, no borders, no fill, no number format.
+
+Lets set a date number format to see a better formatted date in Excel:
+
+```javascript
+// create a date format
+var dateFrmt = wb.addNumberFormat("dd/mm/yy;@");
+
+// create a default style
+var defStyle = wb.createStyle("Standard");
+// derive a new style from the default style
+var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt});
+
+// apply the style
+cell.setStyle(dateStyle);
+```
+
+To see which number formats are available take a look at the OOXML spec.
+
+
+
+#### Fills
+
+You can define pattern fills. Possible options for a pattern fill are: `fgColor`, `bgColor` and `type`.
+Lets create a red solid fill:
+
+```javascript
+// create a color (RGBA)
+var red = wb.color(255,0,0,0);
+// create a pattern fill
+var redFill = wb.addPatternFill({fgColor:red, type:excel.constants.PATTERN_TYPE_SOLID});
+// create a red fill style
+var redFillStyle = wb.addStyle(defStyle, {fill: redFill});
+// apply the style
+cell.setStyle(dateStyle);
+```
