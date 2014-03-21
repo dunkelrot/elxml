@@ -72,8 +72,6 @@ cell.setStyle(dateStyle);
 
 To see which number formats are available take a look at the OOXML spec.
 
-
-
 #### Fills
 
 You can define pattern fills. Possible options for a pattern fill are: `fgColor`, `bgColor` and `type`.
@@ -90,12 +88,32 @@ var redFillStyle = wb.addStyle(defStyle, {fill: redFill});
 cell.setStyle(dateStyle);
 ```
 
-
 #### Borders
-tbd
+You can define the borders for a cell. First you have to create a border representation object
+which is used to define the border style.
+
+```javascript
+// create a color (RGBA)
+var black = wb.color(0,0,0,0);
+// create a thick border presentation with a black color
+var thickBorderPr = wb.createBorderPr(excel.constants.BORDER_STYLE_THICK, black);
+// create a border type, bottom line is set to thickBorderPr
+var border = wb.addBorder({bottom:thickBorderPr});
+// create a border style
+var borderStyle = wb.addStyle(defStyle, {border: border});
+// apply the style
+cell.setStyle(borderStyle);
+```
 
 #### Fonts
-tbd
+```javascript
+// create a bold font, the font is derived from the default font
+var boldFont = wb.addFont({bold: true});
+// create a border style
+var boldFontStyle = wb.addStyle(defStyle, {font: boldFont});
+// apply the style
+cell.setStyle(boldFontStyle);
+```
 
 #### Column width
 tbd
