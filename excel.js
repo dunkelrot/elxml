@@ -1,5 +1,7 @@
 var builder = require('xmlbuilder');
 var fs = require('fs');
+var _ = require('underscore');
+
 require('node-zip');
 
 exports.constants = {};
@@ -242,33 +244,12 @@ Column.prototype = {
     }
 }
 
-// columns container
-function Columns() {
-    this.cols = [];
-}
-Columns.prototype = {
-    constructor : Columns,
-    add : function(min, max, width, bestFit) {
-        var col = new Column(min, max, width, bestFit);
-        this.cols.push(col);
-        return col;
-    },
-    save : function(parent) {
-        if (this.cols.length > 0) {
-            var colsEle = parent.ele("cols");
-            for (var ii in this.cols) {
-                this.cols[ii].save(colsEle);
-            }
-        }
-    }
-}
-
-function Font(name, size, id) {
+function Font(opts, id) {
     // if something is changed here -> update clone as well!
-    this.name = name;
-    this.size = size;
+    this.name = opts.name;
+    this.size = opts.size;
+    this.bold = opts.bold;
     this.id = id;
-    this.bold = false;
 }
 Font.prototype = {
     constructor : Font,
@@ -281,8 +262,7 @@ Font.prototype = {
         }
     },
     clone : function() {
-        font = new Font(this.name, this.size, this.id);
-        font.bold = this.bold;
+        font = new Font({name:this.name, size:this.size, bold:this.bold}, this.id);
         return font;
     }
 }
@@ -290,19 +270,25 @@ function Fonts() {
     this.fontId = 0;
     this.fonts = [];
     // create a default font
-    this.addFont("Calibri",11);
+    this.defaultOpts = {bold: false, size: 11, name:"Calibri"};
+    this.addFont(this.defaultOpts);
 }
 Fonts.prototype = {
     constructor : Fonts,
-    addFont : function(name, size) {
-        var font = new Font(name, size, this.fontId++);
+    addFont : function(opts) {
+        var font = new Font(opts, this.fontId++);
         this.fonts.push(font);
         return font;
     },
-    deriveFromDefault : function() {
+    deriveFromDefault : function(opts) {
         var defFont = this.fonts[0];
         var newFont = defFont.clone();
         newFont.id = this.fontId++;
+        opts = (opts == undefined ? {} : opts);
+        _.defaults(opts, this.defaultOpts);
+        newFont.bold = opts.bold;
+        newFont.size = opts.size;
+        newFont.name = opts.name;
         this.fonts.push(newFont);
         return newFont;
     },
@@ -353,12 +339,12 @@ BorderPr.prototype = {
     }
 }
 
-function Border(top, right, bottom, left, id) {
+function Border(opts, id) {
     this.id = id;
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
-    this.left = left;
+    this.top = opts.top;
+    this.right = opts.right;
+    this.bottom = opts.bottom;
+    this.left = opts.left;
 }
 Border.prototype = {
     constructor : Border,
@@ -376,12 +362,14 @@ function Borders() {
     this.borderId = 0;
     this.borders = [];
     // create a default border
-    this.add(null, null, null, null);
+    this.add();
 }
 Borders.prototype = {
     constructor : Borders,
-    add : function(top, right, bottom, left) {
-        var border = new Border(top, right, bottom, left, this.borderId++);
+    add : function(opts) {
+        opts = (opts == undefined ? {} : opts);
+        _.defaults(opts,{top:null, bottom:null, left:null, right:null});
+        var border = new Border(opts, this.borderId++);
         this.borders.push(border);
         return border;
     },
@@ -398,10 +386,10 @@ Borders.prototype = {
     }
 }
 
-function PatternFill(fgColor, bgColor, patternType, id) {
-    this.fgColor = fgColor;
-    this.bgColor = bgColor;
-    this.patternType = patternType;
+function PatternFill(opts, id) {
+    this.fgColor = opts.fgColor;
+    this.bgColor = opts.bgColor;
+    this.type = opts.type;
     this.id = id;
 }
 PatternFill.prototype = {
@@ -415,7 +403,7 @@ PatternFill.prototype = {
         if (this.bgColor != null) {
             this.bgColor.save(pf, "bgColor");
         }
-        pf.att("patternType", this.patternType);
+        pf.att("patternType", this.type);
     }
 }
 
@@ -423,13 +411,15 @@ function Fills() {
     this.fillId = 0;
     this.fills = [];
     // create two default fills, looks like that this is required
-    this.addPatternFill(null, null, exports.constants.PATTERN_TYPE_NONE);
-    this.addPatternFill(null, null, exports.constants.PATTERN_TYPE_GRAY125);
+    this.addPatternFill({type: exports.constants.PATTERN_TYPE_NONE});
+    this.addPatternFill({type: exports.constants.PATTERN_TYPE_GRAY125});
 }
 Fills.prototype = {
     constructor : Fills,
-    addPatternFill : function(fgColor, bgColor, patternType) {
-        var fill = new PatternFill(fgColor, bgColor, patternType, this.fillId++);
+    addPatternFill : function(opts) {
+        opts = (opts == undefined ? {} : opts);
+        _.defaults(opts, {fgColor: null, bgColor: null, type: exports.constants.PATTERN_TYPE_NONE});
+        var fill = new PatternFill(opts, this.fillId++);
         this.fills.push(fill);
         return fill;
     },
@@ -512,24 +502,26 @@ CellStyles.prototype = {
         this.styles.push(style);
         return style;
     },
-    derive : function(cellStyle, numFormat, font, fill, border) {
+    derive : function(cellStyle, opts) {
+        opts = (opts == undefined ? {} : opts);
+        _.defaults(opts, {numFrmt: null, fill: null, font: null, border: null});
         var style = new CellStyle(null, this.nextStyleId++);
         style.apply(cellStyle);
         
-        if (numFormat != null) {
-            style.numFormat = numFormat;
+        if (opts.numFormat != null) {
+            style.numFormat = opts.numFormat;
             style.applyNumFormat = 1;
         }
-        if (font != null) {
-            style.font = font;
+        if (opts.font != null) {
+            style.font = opts.font;
             style.applyFont = 1;
         }
-        if (fill != null) {
-            style.fill = fill;
+        if (opts.fill != null) {
+            style.fill = opts.fill;
             style.applyFill = 1;
         }
-        if (border != null) {
-            style.border = border;
+        if (opts.border != null) {
+            style.border = opts.border;
             style.applyBorder = 1;
         }        
         this.styles.push(style);
@@ -605,43 +597,37 @@ Row.prototype = {
     }
 }
 
-function Rows() {
+function Sheet(id, name) {
+    this.id = id;
+    this.name = name;
     this.rows = [];
+    this.cols = [];
 }
-Rows.prototype = {
-    constructor : Rows,
+Sheet.prototype = {
+    constructor : Sheet,
     addRow : function(index) {
         var row = new Row(index);
         this.rows.push(row);
         return row;
     },
-    save : function(sheet) {
-        for (var ii in this.rows) {
-            this.rows[ii].save(sheet);
-        }
-    }
-}
-
-function Sheet(id, name) {
-    this.id = id;
-    this.name = name;
-    this.rows = new Rows();
-    this.cols = new Columns();
-}
-Sheet.prototype = {
-    constructor : Sheet,
-    root : function() {
-        return this.root;
-    },
-    row : function(index) {
-        return this.rows.addRow(index);
-    },
-    cell : function(row, index, type) {
-        return row.addCell(index, type);
+    setColumn : function(min, max, width, bestFit) {
+        var col = new Column(min, max, width, bestFit);
+        this.cols.push(col);
+        return col;
     },
     save : function(root) {
-        this.cols.save(root);
-        this.rows.save(root.ele("sheetData"));
+        if (this.cols.length > 0) {
+            var colsEle = root.ele("cols");
+            for (var ii in this.cols) {
+                this.cols[ii].save(colsEle);
+            }
+        }
+        if (this.rows.length > 0) {
+            var sheetData = root.ele("sheetData")
+            for (var ii in this.rows) {
+                this.rows[ii].save(sheetData);
+            }
+        }
     }
 }
 
@@ -656,7 +642,10 @@ function Workbook () {
 }
 Workbook.prototype = {
     constructor : Workbook,
-    createSheet : function(name) {
+    createStyle : function(name) {
+        return this.styles.create(name);
+    },
+    addSheet : function(name) {
         var sheet = new Sheet(this.relID++, name);
         this.sheets.push(sheet);
         return sheet;
@@ -732,18 +721,8 @@ Workbook.prototype = {
 
         this.fonts.save(stylesheet);
         this.fills.save(stylesheet);
-        
         this.borders.save(stylesheet);
-        /*
-        // dummy borders
-        var border = stylesheet.ele("borders").att("count",0).ele("border");
-        border.ele("left");
-        border.ele("right");
-        border.ele("top");
-        border.ele("bottom");
-        border.ele("diagonal");
-        */
-        
+
         // cellStyleXfs
         var cellStyleXfs = stylesheet.ele("cellStyleXfs");
         cellStyleXfs.att("count",this.styles.countDirectStyles());
@@ -760,7 +739,7 @@ Workbook.prototype = {
         var xmlString = stylesheet.end({ pretty: true, indent: '  ', newline: '\n' });
         zipFolder.file("styles.xml", xmlString);
     },
-    save : function(folder, fileName) {
+    save : function(fileName) {
         
         var zip = new JSZip();
         var relsFolder   = zip.folder("_rels");
@@ -795,8 +774,8 @@ Workbook.prototype = {
         
         // create zip
         var data = zip.generate({base64:false,compression:'DEFLATE'});
-        fs.writeFileSync(folder + "\\" + fileName, data, 'binary');
-        return folder + "\\" + fileName;
+        fs.writeFileSync(fileName, data, 'binary');
+        return fileName;
     },
     coords : function(column) {
         var col = column - 1;
@@ -816,40 +795,24 @@ Workbook.prototype = {
     },
     color : function(r,g,b) {
         return new Color(r,g,b,0);
+    },
+    createBorderPr : function(style, color) {
+        return this.borders.createBorderPr(style, color);
+    },
+    addNumberFormat : function(value) {
+        return this.numberFormats.add(value);
+    },
+    addFont : function(opts) {
+        return this.fonts.deriveFromDefault(opts);
+    },
+    addPatternFill : function(opts) {
+        return this.fills.addPatternFill(opts);
+    },
+    addBorder : function(opts) {
+        return this.borders.add(opts);
+    },
+    addStyle : function(style, opts) {
+        return this.styles.derive(style, opts)
     }
 }
 
-// var color = new Color(255,255,0,255);
-// console.log(color.toHexARGB());
-
-/*
-// test
-var wb = new Workbook();
-var dateFrmt = wb.numberFormats.add("dd/mm/yy;@");
-var defStyle = wb.styles.create("Standard");
-var boldFont = wb.fonts.deriveFromDefault();
-boldFont.bold = true;
-
-var black = new Color(0,0,0,255);
-
-var thinBorder = wb.borders.createBorderPr(exports.constants.BORDER_STYLE_THICK, black);
-// console.log(thinBorder);
-var border = wb.borders.add(null, null, thinBorder, null);
-
-var red = new Color(255,0,0,0);
-var fill = wb.fills.addPatternFill(red, null, exports.constants.PATTERN_TYPE_SOLID);
-
-var dateStyle = wb.styles.derive(defStyle, dateFrmt, boldFont, fill, border);
-dateStyle.setAlignment(exports.constants.CELL_ALIGNMENT_H_LEFT,null);
-
-var sheet = wb.createSheet("mySheet");
-sheet.cols.add(1,1,30);
-
-var row = sheet.row(1);
-var cell = sheet.cell(row,"A","d");
-cell.setValue("2014-02-02");
-cell.setStyle(dateStyle);
-
-wb.save("F:\\tmp", "test.01.xlsx");
-
-*/

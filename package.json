@@ -1,14 +1,15 @@
 {
   "name": "elxml",
   "description": "minimalistic excel ooxml export",
-  "homepage": "",
-  "repository": "",
+  "homepage": "https://github.com/dunkelrot/elxml",
+  "repository": "git://github.com/dunkelrot/elxml",
   "version": "0.0.1",
   "author":"Arndt Teinert <arndt.teinertgmx.de>",
   "main":"./excel.js",
   "dependencies": {
     "xmlbuilder":"*",
-    "node-zip":"*"  
+    "node-zip":"*",
+    "underscore":"*"
   },
   "keywords": [
     "excel",
