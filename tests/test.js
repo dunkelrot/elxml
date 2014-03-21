@@ -27,7 +27,7 @@ var thickBorderPr = wb.createBorderPr(excel.constants.BORDER_STYLE_THICK, black)
 var border = wb.addBorder({bottom:thickBorderPr});
 
 // create the style
-var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt, font: boldFont, fill: redFill, border: border});
+var dateStyle = wb.addStyle(defStyle, {numFormat: dateFrmt, font: boldFont, fill: redFill, border: border});
 dateStyle.setAlignment(excel.constants.CELL_ALIGNMENT_H_LEFT,null);
 
 // create a sheet

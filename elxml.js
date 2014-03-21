@@ -188,7 +188,6 @@ Color.prototype = {
         } else {
             ele = parent.ele(this.name);
         }
-        console.log(this.index);
         if (this.index != -1) {
             ele.att("indexed", this.index);
         } else if (this._auto == true) {
@@ -504,7 +503,7 @@ CellStyles.prototype = {
     },
     derive : function(cellStyle, opts) {
         opts = (opts == undefined ? {} : opts);
-        _.defaults(opts, {numFrmt: null, fill: null, font: null, border: null});
+        _.defaults(opts, {numFormat: null, fill: null, font: null, border: null});
         var style = new CellStyle(null, this.nextStyleId++);
         style.apply(cellStyle);
         
