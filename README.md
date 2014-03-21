@@ -14,6 +14,10 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 
 Most of this functionality is very basic.
 
+Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
+[node-zip](https://github.com/daraosn/node-zip) and [underscore](https://github.com/jashkenas/underscore)
+
+
 ### Usage
 
 Create a workbook:
@@ -106,15 +110,25 @@ cell.setStyle(borderStyle);
 ```
 
 #### Fonts
+You can create new fonts which are derived from the default font.
+You can set the size and whether the font is bold or not (default).
+
 ```javascript
 // create a bold font, the font is derived from the default font
 var boldFont = wb.addFont({bold: true});
-// create a border style
+// create a font style
 var boldFontStyle = wb.addStyle(defStyle, {font: boldFont});
 // apply the style
 cell.setStyle(boldFontStyle);
 ```
 
 #### Column width
-tbd
 
+It is simple to define the widht for one or more columns.
+
+```javascript
+// set the width of the first column to 30
+sheet.setColumn(1,1,30);
+// set the width of columns 2 - 5 to 50
+sheet.setColumn(2,5,50);
+```

@@ -4,7 +4,7 @@
   "homepage": "https://github.com/dunkelrot/elxml",
   "repository": "git://github.com/dunkelrot/elxml",
   "version": "0.0.2",
-  "author":"Arndt Teinert <arndt.teinertgmx.de>",
+  "author":"Arndt Teinert <arndt.teinert@gmx.de>",
   "main":"./elxml.js",
   "dependencies": {
     "xmlbuilder":"*",
@@ -18,5 +18,11 @@
     "simpel"
   ],
   "contributors": [
-  ]
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
+    }
+  ],
 }
