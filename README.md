@@ -10,7 +10,7 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 4. PatternFills for cells
 5. Borders for cells
 6. Number formats for cells
-7. Multiple fonts for cells
+7. Fonts for cells
 
 Most of this functionality is very basic.
 
@@ -43,7 +43,7 @@ Last step is to save the workbook:
 wb.save("test.01.xlsx");
 ```
 
-### Extended usages
+### Advanced usage
 
 
 #### Number formats
@@ -89,3 +89,14 @@ var redFillStyle = wb.addStyle(defStyle, {fill: redFill});
 // apply the style
 cell.setStyle(dateStyle);
 ```
+
+
+#### Borders
+tbd
+
+#### Fonts
+tbd
+
+#### Column width
+tbd
+
