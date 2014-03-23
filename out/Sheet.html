@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Sheet</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Sheet</h1>
+
+    
+
+
+
+<section>
+
+<header>
+    <h2>
+    Sheet
+    </h2>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <h4 class="name" id="Sheet"><span class="type-signature"></span>new Sheet<span class="signature">(id, name)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Don't use this constructor, use <a href="Workbook.html#addSheet"><code>Workbook#addSheet</code></a> instead.
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the sheet id</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the sheet name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="elxml.js.html">elxml.js</a>, <a href="elxml.js.html#line736">line 736</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="addRow"><span class="type-signature"></span>addRow<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Adds a <a href="Row.html"><code>Row</code></a> to this sheet.
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the row index (1-...)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="elxml.js.html">elxml.js</a>, <a href="elxml.js.html#line748">line 748</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setColumn"><span class="type-signature"></span>setColumn<span class="signature">(min, max, width, bestFit)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Defines the width for the specified columns.
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the lower index</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the upper index</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the column width</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bestFit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true if the column should fit to the contents (optional)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="elxml.js.html">elxml.js</a>, <a href="elxml.js.html#line760">line 760</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Border.html">Border</a></li><li><a href="BorderPr.html">BorderPr</a></li><li><a href="Cell.html">Cell</a></li><li><a href="CellStyle.html">CellStyle</a></li><li><a href="Color.html">Color</a></li><li><a href="NumberFormat.html">NumberFormat</a></li><li><a href="PatternFill.html">PatternFill</a></li><li><a href="Row.html">Row</a></li><li><a href="Sheet.html">Sheet</a></li><li><a href="Workbook.html">Workbook</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BORDER_STYLE_DASH_DOT">BORDER_STYLE_DASH_DOT</a></li><li><a href="global.html#BORDER_STYLE_DASH_DOT_DOT">BORDER_STYLE_DASH_DOT_DOT</a></li><li><a href="global.html#BORDER_STYLE_DASHED">BORDER_STYLE_DASHED</a></li><li><a href="global.html#BORDER_STYLE_DOTTED">BORDER_STYLE_DOTTED</a></li><li><a href="global.html#BORDER_STYLE_DOUBLE">BORDER_STYLE_DOUBLE</a></li><li><a href="global.html#BORDER_STYLE_HAIR">BORDER_STYLE_HAIR</a></li><li><a href="global.html#BORDER_STYLE_MEDIUM">BORDER_STYLE_MEDIUM</a></li><li><a href="global.html#BORDER_STYLE_MEDIUM_DASH_DOT">BORDER_STYLE_MEDIUM_DASH_DOT</a></li><li><a href="global.html#BORDER_STYLE_MEDIUM_DASH_DOT_DOT">BORDER_STYLE_MEDIUM_DASH_DOT_DOT</a></li><li><a href="global.html#BORDER_STYLE_MEDIUM_DASHED">BORDER_STYLE_MEDIUM_DASHED</a></li><li><a href="global.html#BORDER_STYLE_NONE">BORDER_STYLE_NONE</a></li><li><a href="global.html#BORDER_STYLE_SLANT_DASH_DOT">BORDER_STYLE_SLANT_DASH_DOT</a></li><li><a href="global.html#BORDER_STYLE_THICK">BORDER_STYLE_THICK</a></li><li><a href="global.html#BORDER_STYLE_THIN">BORDER_STYLE_THIN</a></li><li><a href="global.html#CELL_ALIGNMENT_H_CENTER">CELL_ALIGNMENT_H_CENTER</a></li><li><a href="global.html#CELL_ALIGNMENT_H_CENTER_CONT">CELL_ALIGNMENT_H_CENTER_CONT</a></li><li><a href="global.html#CELL_ALIGNMENT_H_DISTRIBUTED">CELL_ALIGNMENT_H_DISTRIBUTED</a></li><li><a href="global.html#CELL_ALIGNMENT_H_FILL">CELL_ALIGNMENT_H_FILL</a></li><li><a href="global.html#CELL_ALIGNMENT_H_JUSTIFY">CELL_ALIGNMENT_H_JUSTIFY</a></li><li><a href="global.html#CELL_ALIGNMENT_H_LEFT">CELL_ALIGNMENT_H_LEFT</a></li><li><a href="global.html#CELL_ALIGNMENT_H_RIGHT">CELL_ALIGNMENT_H_RIGHT</a></li><li><a href="global.html#CELL_ALIGNMENT_V_BOTTOM">CELL_ALIGNMENT_V_BOTTOM</a></li><li><a href="global.html#CELL_ALIGNMENT_V_CENTER">CELL_ALIGNMENT_V_CENTER</a></li><li><a href="global.html#CELL_ALIGNMENT_V_DISTRIBUTED">CELL_ALIGNMENT_V_DISTRIBUTED</a></li><li><a href="global.html#CELL_ALIGNMENT_V_JUSTIFY">CELL_ALIGNMENT_V_JUSTIFY</a></li><li><a href="global.html#CELL_ALIGNMENT_V_TOP">CELL_ALIGNMENT_V_TOP</a></li><li><a href="global.html#CELL_TYPE_BOOLEAN">CELL_TYPE_BOOLEAN</a></li><li><a href="global.html#CELL_TYPE_DATE">CELL_TYPE_DATE</a></li><li><a href="global.html#CELL_TYPE_ERROR">CELL_TYPE_ERROR</a></li><li><a href="global.html#CELL_TYPE_FORMULAR">CELL_TYPE_FORMULAR</a></li><li><a href="global.html#CELL_TYPE_NUMBER">CELL_TYPE_NUMBER</a></li><li><a href="global.html#CELL_TYPE_STRING">CELL_TYPE_STRING</a></li><li><a href="global.html#createWorkbook">createWorkbook</a></li><li><a href="global.html#PATTERN_TYPE_DARK_DOWN">PATTERN_TYPE_DARK_DOWN</a></li><li><a href="global.html#PATTERN_TYPE_DARK_GRAY">PATTERN_TYPE_DARK_GRAY</a></li><li><a href="global.html#PATTERN_TYPE_DARK_GRID">PATTERN_TYPE_DARK_GRID</a></li><li><a href="global.html#PATTERN_TYPE_DARK_HORIZONTAL">PATTERN_TYPE_DARK_HORIZONTAL</a></li><li><a href="global.html#PATTERN_TYPE_DARK_TRELLIS">PATTERN_TYPE_DARK_TRELLIS</a></li><li><a href="global.html#PATTERN_TYPE_DARK_VERTICAL">PATTERN_TYPE_DARK_VERTICAL</a></li><li><a href="global.html#PATTERN_TYPE_GRAY125">PATTERN_TYPE_GRAY125</a></li><li><a href="global.html#PATTERN_TYPE_GRAY0625">PATTERN_TYPE_GRAY0625</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_DOWN">PATTERN_TYPE_LIGHT_DOWN</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_GREY">PATTERN_TYPE_LIGHT_GREY</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_GRID">PATTERN_TYPE_LIGHT_GRID</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_HORIZONTAL">PATTERN_TYPE_LIGHT_HORIZONTAL</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_TRELLIS">PATTERN_TYPE_LIGHT_TRELLIS</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_UP">PATTERN_TYPE_LIGHT_UP</a></li><li><a href="global.html#PATTERN_TYPE_LIGHT_VERTICAL">PATTERN_TYPE_LIGHT_VERTICAL</a></li><li><a href="global.html#PATTERN_TYPE_MEDIUM_GRAY">PATTERN_TYPE_MEDIUM_GRAY</a></li><li><a href="global.html#PATTERN_TYPE_NONE">PATTERN_TYPE_NONE</a></li><li><a href="global.html#PATTERN_TYPE_SOLID">PATTERN_TYPE_SOLID</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Sun Mar 23 2014 12:53:44 GMT+0100 (Mitteleuropäische Zeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -85,8 +85,8 @@ Lets create a red solid fill:
 // create a color (RGBA)
 var red = wb.color(255,0,0,0);
 // create a pattern fill
-var redFill = wb.addPatternFill({fgColor:red, type:excel.constants.PATTERN_TYPE_SOLID});
-// create a red fill style
+var redFill = wb.addPatternFill({fgColor:red, type:excel.PATTERN_TYPE_SOLID});
+// create a cell style with the red fill
 var redFillStyle = wb.addStyle(defStyle, {fill: redFill});
 // apply the style
 cell.setStyle(dateStyle);
@@ -100,10 +100,10 @@ which is used to define the border style.
 // create a color (RGBA)
 var black = wb.color(0,0,0,0);
 // create a thick border presentation with a black color
-var thickBorderPr = wb.createBorderPr(excel.constants.BORDER_STYLE_THICK, black);
+var thickBorderPr = wb.createBorderPr(excel.BORDER_STYLE_THICK, black);
 // create a border type, bottom line is set to thickBorderPr
 var border = wb.addBorder({bottom:thickBorderPr});
-// create a border style
+// create a cell style with the border
 var borderStyle = wb.addStyle(defStyle, {border: border});
 // apply the style
 cell.setStyle(borderStyle);
@@ -116,7 +116,7 @@ You can set the size and whether the font is bold or not (default).
 ```javascript
 // create a bold font, the font is derived from the default font
 var boldFont = wb.addFont({bold: true});
-// create a font style
+// create a cell style with the bold font
 var boldFontStyle = wb.addStyle(defStyle, {font: boldFont});
 // apply the style
 cell.setStyle(boldFontStyle);

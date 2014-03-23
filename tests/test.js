@@ -18,17 +18,17 @@ var dateFrmt = wb.addNumberFormat("dd/mm/yy;@");
 var boldFont = wb.addFont({bold: true});
 
 // create a fill pattern, foreground color is red with a solid fill
-var redFill = wb.addPatternFill({fgColor:red, type:excel.constants.PATTERN_TYPE_SOLID});
+var redFill = wb.addPatternFill({fgColor:red, type:excel.PATTERN_TYPE_SOLID});
 
 // create a thick border presentation with a black color
-var thickBorderPr = wb.createBorderPr(excel.constants.BORDER_STYLE_THICK, black);
+var thickBorderPr = wb.createBorderPr(excel.BORDER_STYLE_THICK, black);
 
 // create a border type, bottom line is set to thinBorder
 var border = wb.addBorder({bottom:thickBorderPr});
 
 // create the style
 var dateStyle = wb.addStyle(defStyle, {numFormat: dateFrmt, font: boldFont, fill: redFill, border: border});
-dateStyle.setAlignment(excel.constants.CELL_ALIGNMENT_H_LEFT,null);
+dateStyle.setAlignment(excel.CELL_ALIGNMENT_H_LEFT,null);
 
 // create a sheet
 var sheet = wb.addSheet("mySheet");
@@ -40,7 +40,7 @@ sheet.setColumn(1,1,30);
 var row = sheet.addRow(1);
 
 // add a single cell "A1"
-var cell = row.addCell("A","d");
+var cell = row.addCell("A",excel.CELL_TYPE_DATE);
 
 // the the value (ISO date string)
 cell.setValue("2014-02-02");
