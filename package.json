@@ -3,7 +3,7 @@
   "description": "minimalistic excel ooxml export",
   "homepage": "https://github.com/dunkelrot/elxml",
   "repository": "git://github.com/dunkelrot/elxml",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author":"Arndt Teinert <arndt.teinert@gmx.de>",
   "main":"./elxml.js",
   "dependencies": {
