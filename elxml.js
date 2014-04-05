@@ -702,7 +702,10 @@ Cell.prototype = {
 /**
  * @class
  */
-function Row(index) {
+function Row(index, opts) {
+    opts = (opts == undefined ? {} : opts);
+    _.defaults(opts, {height:-1});
+    this.height = opts.height;
     this.index = index;
     this.cells = [];
 }
@@ -721,6 +724,10 @@ Row.prototype = {
     save : function(sheetData) {
         var ele = sheetData.ele("row");
         ele.att("r", this.index);
+        if (this.height != -1) {
+            ele.attr("ht".this.height);
+            ele.attr("customHeight", 1);
+        }
         for (var ii in this.cells) {
             this.cells[ii].save(ele);
         }
@@ -741,12 +748,21 @@ function Sheet(id, name) {
 }
 Sheet.prototype = {
     constructor : Sheet,
+    
+    /**
+     * @typedef RowOpts
+     * @type {object}
+     * @property {number} height - the row height
+     * @desc all parameters are optional
+     */
+    
     /**
      * @param index {number} the row index (1-...)
+     * @param opts {RowOpts} additional options
      * @desc Adds a {@linkcode Row} to this sheet.
      */
-    addRow : function(index) {
-        var row = new Row(index);
+    addRow : function(index, opts) {
+        var row = new Row(index, opts);
         this.rows.push(row);
         return row;
     },
