@@ -428,7 +428,7 @@ BorderPr.prototype = {
     constructor : BorderPr,
     save : function(parent, name) {
         var borderPr = parent.ele(name);
-        if (this.color != undefined) {
+        if (this.color != undefined && !this.color.auto) {
             this.color.save(borderPr,"color");
         }
         borderPr.att("style", this.style);
