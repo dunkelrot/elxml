@@ -592,6 +592,11 @@ CellStyle.prototype = {
         this.applyFont = 1;
         return this;
     },
+    setBorder : function (border) {
+        this.border = border;
+        this.applyBorder = 1;
+        return this;
+    },
     apply : function(style) {
         this.parentStyle = style;
         this.font = style.font;
