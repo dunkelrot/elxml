@@ -736,6 +736,23 @@ Row.prototype = {
 
 /**
  * @class
+ * @param range {string} range identifier (eg. 'A1:B2')
+ * @desc
+ */
+function MergeCell(range) {
+    this.range = range;
+}
+MergeCell.prototype = {
+    constructor : MergeCell,
+
+    save : function(mergeCells) {
+        var ele = mergeCells.ele("mergeCell");
+        ele.att("ref", this.range);
+    }
+}
+
+/**
+ * @class
  * @param id {number} the sheet id
  * @param name {string} the sheet name
  * @desc Don't use this constructor, use {@linkcode Workbook#addSheet} instead.
@@ -745,6 +762,7 @@ function Sheet(id, name) {
     this.name = name;
     this.rows = [];
     this.cols = [];
+    this.merges = [];
 }
 Sheet.prototype = {
     constructor : Sheet,
@@ -778,6 +796,15 @@ Sheet.prototype = {
         this.cols.push(col);
         return col;
     },
+    /**
+     * @param range {string} range identifier (eg. 'A1:B2')
+     * @desc merge range of cells
+     */
+    mergeCell : function(range) {
+        var merge = new MergeCell(range);
+        this.merges.push(merge);
+        return merge;
+    },
     save : function(root) {
         if (this.cols.length > 0) {
             var colsEle = root.ele("cols");
@@ -789,6 +816,12 @@ Sheet.prototype = {
             var sheetData = root.ele("sheetData")
             for (var ii in this.rows) {
                 this.rows[ii].save(sheetData);
+            }
+        }
+        if (this.merges.length > 0) {
+            var mergeCells = root.ele("mergeCells");
+            for (var ii in this.merges) {
+              this.merges[ii].save(mergeCells);
             }
         }
     }
