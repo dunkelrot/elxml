@@ -167,10 +167,10 @@ function _writeStyle(ele, style, id) {
     var xf = ele.ele("xf")
 
     xf.att("numFmtId", style.numFormat != null ? style.numFormat.id : 0);
-    xf.att("fontId", style.font != null ? style.font.id : 0); 
+    xf.att("fontId", style.font != null ? style.font.id : 0);
     xf.att("fillId", style.fill != null ? style.fill.id : 0);
     xf.att("borderId", style.border != null ? style.border.id : 0);
-    
+
     if (id != null) {
         xf.att("xfId",id);
     }
@@ -188,7 +188,7 @@ function _writeStyle(ele, style, id) {
     }
     if (style.applyFill != 0) {
         xf.att("applyFill",1);
-    }    
+    }
     if (style.alignment != null) {
         style.alignment.save(xf);
     }
@@ -198,7 +198,7 @@ function _writeStyle(ele, style, id) {
 // if all is true every style is added otherwise only those which
 // don't have a parent style
 function _writeXF(ele, styles, all) {
-    
+
     for (var ii in styles) {
         var style = styles[ii];
         if (style.parentStyle == null || all == true) {
@@ -300,7 +300,7 @@ function Column(min, max, width, bestFit) {
     this._max = max;
     this._width = width;
     if (bestFit != undefined) {
-        this._bestFit = bestFit;    
+        this._bestFit = bestFit;
     }
 }
 Column.prototype = {
@@ -618,7 +618,7 @@ CellStyles.prototype = {
         _.defaults(opts, {numFormat: null, fill: null, font: null, border: null});
         var style = new CellStyle(null, this.nextStyleId++);
         style.apply(cellStyle);
-        
+
         if (opts.numFormat != null) {
             style.numFormat = opts.numFormat;
             style.applyNumFormat = 1;
@@ -634,7 +634,7 @@ CellStyles.prototype = {
         if (opts.border != null) {
             style.border = opts.border;
             style.applyBorder = 1;
-        }        
+        }
         this.styles.push(style);
         return style;
     },
@@ -748,14 +748,14 @@ function Sheet(id, name) {
 }
 Sheet.prototype = {
     constructor : Sheet,
-    
+
     /**
      * @typedef RowOpts
      * @type {object}
      * @property {number} height - the row height
      * @desc all parameters are optional
      */
-    
+
     /**
      * @param index {number} the row index (1-...)
      * @param opts {RowOpts} additional options
@@ -772,7 +772,7 @@ Sheet.prototype = {
      * @param width {number} the column width
      * @param bestFit {boolean} true if the column should fit to the contents (optional)
      * @desc Defines the width for the specified columns.
-     */    
+     */
     setColumn : function(min, max, width, bestFit) {
         var col = new Column(min, max, width, bestFit);
         this.cols.push(col);
@@ -816,14 +816,14 @@ Workbook.prototype = {
     /**
      * @param name - the style name {string}
      * @returns a new {@linkcode CellStyle} with default values
-     */        
+     */
     createStyle : function(name) {
         return this.styles.create(name);
     },
     /**
      * @param name - the sheet name {string}
      * @returns a new {@linkcode Sheet}
-     */    
+     */
     addSheet : function(name) {
         var sheet = new Sheet(this.relID++, name);
         this.sheets.push(sheet);
@@ -854,7 +854,7 @@ Workbook.prototype = {
      * @param g - green value (0-255) {number}
      * @param b - blue value (0-255) {number}
      * @returns a {@linkcode Color}
-     */    
+     */
     color : function(r,g,b) {
         return new Color(r,g,b,0);
     },
@@ -869,18 +869,18 @@ Workbook.prototype = {
     /**
      * @param opts the number format options @type {NumberFormatOpts}
      * @returns a {NumberFormat}
-     */      
+     */
     addNumberFormat : function(value) {
         return this.numberFormats.add(value);
     },
     /**
      * @param opts the fonts options @type {FontOpts}
      * @returns a {Font}
-     */    
+     */
     addFont : function(opts) {
         return this.fonts.deriveFromDefault(opts);
     },
-    
+
     /**
      * @typedef PatternFillOpts
      * @type {object}
@@ -889,7 +889,7 @@ Workbook.prototype = {
      * @property {string} type - pattern type
      * @desc You should specifiy the type, fgColor and bgColor are optional.
      */
- 
+
     /**
      * @param opts the pattern options @type {PatternFillOpts}
      * @returns a {PatternFill}
@@ -897,7 +897,7 @@ Workbook.prototype = {
     addPatternFill : function(opts) {
         return this.fills.addPatternFill(opts);
     },
-    
+
     /**
      * @typedef BorderOpts
      * @type {object}
@@ -905,17 +905,17 @@ Workbook.prototype = {
      * @property {BorderPr} bottom - the bottom border style
      * @property {BorderPr} left - the left border style
      * @property {BorderPr} right - the right border style
-     * @desc All properties are optional. Create a border style {@linkcode BorderPr} with {@linkcode Workbook#createBorderPr} 
+     * @desc All properties are optional. Create a border style {@linkcode BorderPr} with {@linkcode Workbook#createBorderPr}
      */
- 
+
     /**
      * @param opts the border options @type {BorderOpts}
      * @returns a Border
-     */    
+     */
     addBorder : function(opts) {
         return this.borders.add(opts);
     },
-    
+
     /**
      * @typedef StyleOpts
      * @type {object}
@@ -929,12 +929,12 @@ Workbook.prototype = {
      *       Create a {@linkcode PatternFill} with {@linkcode Workbook#addPatternFill}.
      *       Create a {@linkcode NumberFormat} with {@linkcode Workbook#addNumberFormat}.
      */
-    
+
     /**
-     * @param style the parent cell style {CellStyle} 
+     * @param style the parent cell style {CellStyle}
      * @param opts the style options {StyleOpts}
      * @returns a Border
-     */     
+     */
     addStyle : function(style, opts) {
         return this.styles.derive(style, opts)
     },
@@ -943,7 +943,7 @@ Workbook.prototype = {
      * @desc saves the workbook as a Excel 2010 file.
      */
     save : function(fileName) {
-        
+
         var zip = new JSZip();
         var relsFolder   = zip.folder("_rels");
         var xlFolder     = zip.folder("xl");
@@ -952,39 +952,39 @@ Workbook.prototype = {
 
         // create content-types
         this._saveContents(zip);
-        
+
         // create main relationships
         this._saveMainRelations(relsFolder);
-        
+
         // create sheets relationships
         this._saveWorkbookRelations(xlRelsFolder);
-        
+
         // create styles and the workbook
         this._saveStyles(xlFolder);
         this._saveWorkbook(xlFolder);
-        
+
         // create sheet files
         for (var ii in this.sheets) {
             var sheet = this.sheets[ii];
-            
+
             var root = builder.create("worksheet", {version: '1.0', encoding: 'utf-8'});
             root.att("xmlns", EXCEL_SCHEMA_MAIN);
             sheet.save(root);
-            
+
             var xmlString = root.end({ pretty: true, indent: '  ', newline: '\n' });
             sheetsFolder.file("sheet" + sheet.id + ".xml", xmlString);
         }
-        
+
         // create zip
         var data = zip.generate({base64:false,compression:'DEFLATE'});
         fs.writeFileSync(fileName, data, 'binary');
         return fileName;
-    },    
+    },
     // internal stuff below this line
     _saveContents : function(zipFolder) {
         var contents = builder.create("Types",{version: '1.0', encoding: 'utf-8'});
         contents.att("xmlns",EXCEL_SCHEMA_CONTENT_TYPES);
-        
+
         contents.ele("Default").att("Extension","xml").att("ContentType",EXCEL_TYPE_WORKBOOK);
         contents.ele("Default").att("Extension","rels").att("ContentType",EXCEL_TYPE_REL);
         contents.ele("Override").att("PartName","/xl/styles.xml").att("ContentType",EXCEL_TYPE_STYLES);
@@ -1017,7 +1017,7 @@ Workbook.prototype = {
         zipFolder.file("workbook.xml", xmlString);
     },
     _saveWorkbookRelations : function(zipFolder) {
-        
+
         var relations = builder.create("Relationships",{version: '1.0', encoding: 'utf-8'});
         relations.att("xmlns",EXCEL_SCHEMA_FILE_REL);
 
@@ -1025,7 +1025,7 @@ Workbook.prototype = {
         sheetRel.att("Type",EXCEL_SCHEMA_REL_STYLES);
         sheetRel.att("Target","/xl/styles.xml");
         sheetRel.att("Id","rId" + (this.relID++));
-        
+
         for (var ii in this.sheets) {
             var sheet = this.sheets[ii];
             var sheetRel = relations.ele("Relationship");
@@ -1038,10 +1038,10 @@ Workbook.prototype = {
         zipFolder.file("workbook.xml.rels", xmlString);
     },
     _saveStyles : function(zipFolder) {
-        
+
         var stylesheet = builder.create("styleSheet",{version: '1.0', encoding: 'utf-8'});
         stylesheet.att("xmlns",EXCEL_SCHEMA_STYLES);
-        
+
         // number formats
         var numFmts = stylesheet.ele("numFmts");
         numFmts.att("count", this.numberFormats.formats.length);
@@ -1058,15 +1058,15 @@ Workbook.prototype = {
         var cellStyleXfs = stylesheet.ele("cellStyleXfs");
         cellStyleXfs.att("count",this.styles.countDirectStyles());
         _writeXF(cellStyleXfs, this.styles.getStyles(), false);
-        
+
         var cellXfs = stylesheet.ele("cellXfs");
         cellXfs.att("count",this.styles.count());
         _writeXF(cellXfs, this.styles.getStyles(), true);
-        
+
         var cellStyles = stylesheet.ele("cellStyles");
         cellStyles.att("count",this.styles.countDirectStyles());
         _writeCellStyles(cellStyles, this.styles.getStyles());
-        
+
         var xmlString = stylesheet.end({ pretty: true, indent: '  ', newline: '\n' });
         zipFolder.file("styles.xml", xmlString);
     }
