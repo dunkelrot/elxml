@@ -725,8 +725,8 @@ Row.prototype = {
         var ele = sheetData.ele("row");
         ele.att("r", this.index);
         if (this.height != -1) {
-            ele.attr("ht".this.height);
-            ele.attr("customHeight", 1);
+            ele.att("ht", this.height);
+            ele.att("customHeight", 1);
         }
         for (var ii in this.cells) {
             this.cells[ii].save(ele);
