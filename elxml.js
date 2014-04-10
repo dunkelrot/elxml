@@ -820,6 +820,7 @@ Sheet.prototype = {
         }
         if (this.merges.length > 0) {
             var mergeCells = root.ele("mergeCells");
+            mergeCells.att('count', this.merges.length);
             for (var ii in this.merges) {
               this.merges[ii].save(mergeCells);
             }
