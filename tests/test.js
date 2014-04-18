@@ -49,5 +49,9 @@ cell.setValue("2014-02-02");
 cell.setStyle(dateStyle);
 
 // create the file
-wb.save("test.01.xlsx");
+wb.save("test.01.xlsx", function(err){
+	if (err){
+		process.exit(1);
+	}
+});
 
