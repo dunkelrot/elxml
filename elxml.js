@@ -125,10 +125,16 @@ exports.CELL_TYPE_ERROR   = "e";
  */
 exports.CELL_TYPE_STRING   = "inlineStr";
 /**
- * @constant CELL_TYPE_FORMULAR
- * @desc formular string type for cells
+ * @constant CELL_TYPE_FORMULA
+ * @desc formula string type for cells
  */
-exports.CELL_TYPE_FORMULAR   = "str";
+exports.CELL_TYPE_FORMULA  = "str";
+
+/**
+ * @constant CELL_FORMULA_NORMAL
+ * @desc type of formula 
+ */
+exports.CELL_FORMULA_NORMAL = "normal";
 
 /**
  * Creates a {@linkcode Workbook} instance
@@ -669,6 +675,7 @@ function Cell(row, index, type) {
     this.type = type;
     this.style = null;
     this.value = null;
+    this.formula = null;
 }
 Cell.prototype = {
     constructor : Cell,
@@ -678,6 +685,15 @@ Cell.prototype = {
      */
     setValue : function(value) {
         this.value = value;
+        return this;
+    },
+    /**
+     * @param formula {string} the cell formula
+     * In case you set a formula, make sure to set the type to CELL_TYPE_FORMULA
+     * @return this
+     */
+    setFormula : function(formula) {
+        this.formula = formula;
         return this;
     },
     /**
@@ -691,6 +707,11 @@ Cell.prototype = {
     save : function(row) {
         var ele = row.ele("c").att("r", this.index + this.row.index);
         ele.att("t", this.type);
+        if (this.formula != null) {
+            var f = ele.ele("f");
+            f.att("t", exports.CELL_FORMULA_NORMAL);
+            f.t(this.formula);
+        }
         if (this.value != null) {
             if (this.type == undefined || this.type == "inlineStr") {
                 ele.ele("is").ele("t").t(this.value);

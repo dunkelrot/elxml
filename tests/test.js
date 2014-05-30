@@ -40,13 +40,28 @@ sheet.setColumn(1,1,30);
 var row = sheet.addRow(1);
 
 // add a single cell "A1"
-var cell = row.addCell("A",excel.CELL_TYPE_DATE);
-
+var cellA = row.addCell("A",excel.CELL_TYPE_DATE);
 // the the value (ISO date string)
-cell.setValue("2014-02-02");
-
+cellA.setValue("2014-02-02");
 // set the style
-cell.setStyle(dateStyle);
+cellA.setStyle(dateStyle);
+
+// add a row
+var cellB = row.addCell("B",excel.CELL_TYPE_NUMBER);
+cellB.setValue(1);
+
+// add a row
+var cellC = row.addCell("C",excel.CELL_TYPE_NUMBER);
+cellC.setValue(1);
+
+// add a row
+var cellD = row.addCell("D",excel.CELL_TYPE_NUMBER);
+cellD.setValue(1);
+
+// add a row with a simple formula
+var cellE = row.addCell("E",excel.CELL_TYPE_FORMULA);
+cellE.setFormula("SUM(B1:D1)");
+cellE.setValue(3); // optional - should be the result of the formula
 
 // create the file
 wb.save("test.01.xlsx", function(err){
