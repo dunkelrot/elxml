@@ -981,7 +981,7 @@ Workbook.prototype = {
      * @param name  the file name {string}
      * @desc saves the workbook as a Excel 2010 file.
      */
-    save : function(fileName) {
+    save : function(fileName, cb) {
 
         var zip = new JSZip();
         var relsFolder   = zip.folder("_rels");
@@ -1016,7 +1016,7 @@ Workbook.prototype = {
 
         // create zip
         var data = zip.generate({base64:false,compression:'DEFLATE'});
-        fs.writeFileSync(fileName, data, 'binary');
+        fs.writeFile(fileName, data, 'binary', cb);
         return fileName;
     },
     // internal stuff below this line
