@@ -1,21 +1,21 @@
 {
-  "name": "elxml",
-  "description": "minimalistic excel ooxml export",
-  "homepage": "https://github.com/dunkelrot/elxml",
-  "repository": "git://github.com/dunkelrot/elxml",
-  "version": "0.0.4",
-  "author":"Arndt Teinert <arndt.teinert@gmx.de>",
-  "main":"./elxml.js",
+  "name": "elxml-archiver",
+  "description": "minimalistic excel ooxml export with archiver",
+  "homepage": "https://github.com/cowabunga1/elxml-archiver",
+  "repository": "git://github.com/cowabunga1/elxml-archiver",
+  "version": "0.1.0",
+  "author":"Valery Ovchinnikov <cowabunga-1@yandex.ru>",
+  "main":"./elxml-archiver.js",
   "dependencies": {
     "xmlbuilder":"*",
-    "node-zip":"*",
+    "archiver":"*",
     "underscore":"*"
   },
   "keywords": [
     "excel",
     "xml",
     "ooxml",
-    "simpel"
+    "export"
   ],
   "contributors": [
   ],
