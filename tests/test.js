@@ -46,17 +46,37 @@ cellA.setValue("2014-02-02");
 // set the style
 cellA.setStyle(dateStyle);
 
-// add a row
+// add a cell
 var cellB = row.addCell("B",excel.CELL_TYPE_NUMBER);
 cellB.setValue(1);
 
-// add a row
+// add a cell
 var cellC = row.addCell("C",excel.CELL_TYPE_NUMBER);
 cellC.setValue(1);
 
-// add a row
+// add a cell
 var cellD = row.addCell("D",excel.CELL_TYPE_NUMBER);
 cellD.setValue(1);
+
+// add a cell
+var cellA8 = sheet.addRow(8).addCell("A",excel.CELL_TYPE_STRING_TAB);
+cellA8.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+
+// add a cell
+var cellA9 = sheet.addRow(9).addCell("A",excel.CELL_TYPE_STRING_TAB);
+cellA9.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+
+// add a cell
+var cellA10 = sheet.addRow(10).addCell("A",excel.CELL_TYPE_STRING_TAB);
+cellA10.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+
+// add a cell - use default type (CELL_TYPE_STRING)
+var cellA11 = sheet.addRow(11).addCell("A");
+cellA11.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern. - INLINE DEFAULT");
+
+// add a cell
+var cellA12 = sheet.addRow(12).addCell("A",excel.CELL_TYPE_STRING);
+cellA12.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern. - INLINE");
 
 // add a row with a simple formula
 var cellE = row.addCell("E",excel.CELL_TYPE_FORMULA);

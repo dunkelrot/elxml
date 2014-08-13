@@ -101,6 +101,30 @@ cell.setValue( value );
 
 To see which number formats are available take a look at the OOXML spec.
 
+#### Strings
+
+Setting string values for cells is easy, by default strings are saved as inline strings.
+
+```javascript
+// add a cell with a string value
+var cell2 = row.addCell("D");                           // excel.CELL_TYPE_STRING is default
+cell1.setValue("Hello World!);
+
+var cell1 = row.addCell("D",excel.CELL_TYPE_STRING);    // set type
+cell2.setValue("Hello World!);
+```
+
+In case you have tables with many similar string values you can use enable the "shared string" function.
+Note that this must be done for every cell as inline strings are the default.
+
+```javascript
+// add a cell with a string value
+var cell = row.addCell("D",excel.CELL_TYPE_STRING_TAB);
+cell.setValue("Hello World!);
+```
+
+This will save memory while saving and speed up loading of the created Excel file.
+
 #### Fills
 
 You can define pattern fills. Possible options for a pattern fill are: `fgColor`, `bgColor` and `type`.

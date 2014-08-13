@@ -3,6 +3,8 @@ var fs = require('fs');
 var _ = require('underscore');
 var archiver = require('archiver');
 
+var stringtable = require('./modules/stringtable');
+
 /** @constant CELL_ALIGNMENT_H_CENTER */
 exports.CELL_ALIGNMENT_H_CENTER      = "general";
 /** @constant CELL_ALIGNMENT_H_LEFT */
@@ -117,7 +119,7 @@ exports.CELL_TYPE_MSDATE   = "n";
  * @constant CELL_TYPE_BOOLEAN
  * @desc boolean type for cells
  */
-exports.CELL_TYPE_BOOLEAN   = "n";
+exports.CELL_TYPE_BOOLEAN   = "b";
 /**
  * @constant CELL_TYPE_ERROR
  * @desc error type for cells
@@ -125,9 +127,14 @@ exports.CELL_TYPE_BOOLEAN   = "n";
 exports.CELL_TYPE_ERROR   = "e";
 /**
  * @constant CELL_TYPE_STRING
- * @desc inline string (not a shared string as shared string are currently not supported) type for cells
+ * @desc inline string (not a shared string ) type for cells
  */
 exports.CELL_TYPE_STRING   = "inlineStr";
+/**
+ * @constant CELL_TYPE_STRING_TAB
+ * @desc string which will be saved in a string table
+ */
+exports.CELL_TYPE_STRING_TAB = "s";
 /**
  * @constant CELL_TYPE_FORMULA
  * @desc formula string type for cells
@@ -162,12 +169,14 @@ var EXCEL_SCHEMA_DOC_REL       = "http://schemas.openxmlformats.org/officeDocume
 var EXCEL_SCHEMA_REL_TYPE_WB   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
 var EXCEL_SCHEMA_REL_STYLES    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
 var EXCEL_SCHEMA_REL_SHEET     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet";
+var EXCEL_SCHEMA_REL_STRTAB    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings";
 var EXCEL_SCHEMA_STYLES        = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 var EXCEL_TYPE_REL             = "application/vnd.openxmlformats-package.relationships+xml";
 var EXCEL_TYPE_WORKBOOK        = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
 var EXCEL_TYPE_SHEET           = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
-var EXCEL_TYPE_STYLES          = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"
+var EXCEL_TYPE_STYLES          = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+var EXCEL_TYPE_STRINGTABLE     = "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
 
 // the A-Z array, gets filled as soon as it is needed
 var COLUMN_IDS = null;
@@ -710,7 +719,11 @@ Cell.prototype = {
     },
     save : function(row) {
         var ele = row.ele("c").att("r", this.index + this.row.index);
-        ele.att("t", this.type);
+        if (this.type !== undefined) {
+            ele.att("t", this.type);
+        } else {
+            ele.att("t", "inlineStr");
+        }
         if (this.formula != null) {
             var f = ele.ele("f");
             f.att("t", exports.CELL_FORMULA_NORMAL);
@@ -719,6 +732,8 @@ Cell.prototype = {
         if (this.value != null) {
             if (this.type == undefined || this.type == "inlineStr") {
                 ele.ele("is").ele("t").t(this.value);
+            } else if (this.type == "s") {
+                ele.ele("v").t(this.row.strTable.addString(this.value));
             } else {
                 ele.ele("v").t(this.value);
             }
@@ -732,11 +747,12 @@ Cell.prototype = {
 /**
  * @class
  */
-function Row(index, opts) {
+function Row(index, opts, strTable) {
     opts = (opts == undefined ? {} : opts);
     _.defaults(opts, {height:-1});
     this.height = opts.height;
     this.index = index;
+    this.strTable = strTable;
     this.cells = [];
 }
 Row.prototype = {
@@ -787,12 +803,13 @@ MergeCell.prototype = {
  * @param name {string} the sheet name
  * @desc Don't use this constructor, use {@linkcode Workbook#addSheet} instead.
  */
-function Sheet(id, name) {
+function Sheet(id, name, strTable) {
     this.id = id;
     this.name = name;
     this.rows = [];
     this.cols = [];
     this.merges = [];
+    this.strTable = strTable;
 }
 Sheet.prototype = {
     constructor : Sheet,
@@ -810,7 +827,7 @@ Sheet.prototype = {
      * @desc Adds a {@linkcode Row} to this sheet.
      */
     addRow : function(index, opts) {
-        var row = new Row(index, opts);
+        var row = new Row(index, opts, this.strTable);
         this.rows.push(row);
         return row;
     },
@@ -870,6 +887,7 @@ function Workbook () {
     this.fills = new Fills();
     this.fonts = new Fonts();
     this.borders = new Borders();
+    this.strTable = stringtable.createStringTable();
 }
 /**
  * @class
@@ -889,7 +907,7 @@ Workbook.prototype = {
      * @returns a new {@linkcode Sheet}
      */
     addSheet : function(name) {
-        var sheet = new Sheet(this.relID++, name);
+        var sheet = new Sheet(this.relID++, name, this.strTable);
         this.sheets.push(sheet);
         return sheet;
     },
@@ -1058,6 +1076,9 @@ Workbook.prototype = {
             archive.append( xmlString, { name: sheetsFolder + "/" + "sheet" + sheet.id + ".xml" });
         }
 
+        // save the StringTable
+        this.strTable.save( archive, xlFolder );
+
         archive.finalize();
         return fileName;
     },
@@ -1069,6 +1090,7 @@ Workbook.prototype = {
         contents.ele("Default").att("Extension","xml").att("ContentType",EXCEL_TYPE_WORKBOOK);
         contents.ele("Default").att("Extension","rels").att("ContentType",EXCEL_TYPE_REL);
         contents.ele("Override").att("PartName","/xl/styles.xml").att("ContentType",EXCEL_TYPE_STYLES);
+        contents.ele("Override").att("PartName","/xl/sharedStrings.xml").att("ContentType",EXCEL_TYPE_STRINGTABLE);
 
         for (var ii in this.sheets) {
             var sheetName = "/xl/worksheets/sheet" + this.sheets[ii].id + ".xml";
@@ -1105,6 +1127,11 @@ Workbook.prototype = {
         var sheetRel = relations.ele("Relationship");
         sheetRel.att("Type",EXCEL_SCHEMA_REL_STYLES);
         sheetRel.att("Target","/xl/styles.xml");
+        sheetRel.att("Id","rId" + (this.relID++));
+
+        sheetRel = relations.ele("Relationship");
+        sheetRel.att("Type",EXCEL_SCHEMA_REL_STRTAB);
+        sheetRel.att("Target","/xl/sharedStrings.xml");
         sheetRel.att("Id","rId" + (this.relID++));
 
         for (var ii in this.sheets) {
