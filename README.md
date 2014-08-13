@@ -11,6 +11,7 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 5. Borders for cells
 6. Number formats for cells
 7. Fonts for cells
+8. Merge cells
 
 Most of this functionality is very basic.
 
@@ -155,4 +156,15 @@ It is simple to define the widht for one or more columns.
 sheet.setColumn(1,1,30);
 // set the width of columns 2 - 5 to 50
 sheet.setColumn(2,5,50);
+```
+
+#### Merge cells
+
+It is simple to merge cells
+
+```javascript
+// merge cells horizontal
+sheet.mergeCell("A2:D2");
+// merge cells vertical
+sheet.mergeCell("A3:A6");
 ```

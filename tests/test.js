@@ -1,4 +1,4 @@
-var excel = require("../elxml-archiver.js");
+var excel = require("../elxml.js");
 
 // testing
 
@@ -62,6 +62,10 @@ cellD.setValue(1);
 var cellE = row.addCell("E",excel.CELL_TYPE_FORMULA);
 cellE.setFormula("SUM(B1:D1)");
 cellE.setValue(3); // optional - should be the result of the formula
+
+// merge cells
+sheet.mergeCell("A2:C2");
+sheet.mergeCell("A3:A6");
 
 // create the file
 wb.save( "test.01.xlsx" );
