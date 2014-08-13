@@ -1,8 +1,7 @@
 var builder = require('xmlbuilder');
 var fs = require('fs');
 var _ = require('underscore');
-
-require('node-zip');
+var archiver = require('archiver');
 
 /** @constant CELL_ALIGNMENT_H_CENTER */
 exports.CELL_ALIGNMENT_H_CENTER      = "general";
@@ -109,6 +108,11 @@ exports.CELL_TYPE_DATE   = "d";
  * @desc number type for cells
  */
 exports.CELL_TYPE_NUMBER   = "n";
+/**
+ * @constant CELL_TYPE_MSDATE
+ * @desc number type for cells
+ */
+exports.CELL_TYPE_MSDATE   = "n";
 /**
  * @constant CELL_TYPE_BOOLEAN
  * @desc boolean type for cells
@@ -1002,26 +1006,45 @@ Workbook.prototype = {
      * @param name  the file name {string}
      * @desc saves the workbook as a Excel 2010 file.
      */
-    save : function(fileName, cb) {
+    save : function( fileName ) {
+        
+        var output = fs.createWriteStream( fileName );
+        var archive = archiver( 'zip' );
 
-        var zip = new JSZip();
-        var relsFolder   = zip.folder("_rels");
-        var xlFolder     = zip.folder("xl");
-        var xlRelsFolder = xlFolder.folder("_rels");
-        var sheetsFolder = xlFolder.folder("worksheets");
+        // for debuging
+        /*output.on('close', function() {
+          console.log(archive.pointer() + ' total bytes');
+          console.log('archiver has been finalized and the output file descriptor has closed.');
+        });*/
+
+        archive.on('error', function(err) {
+          throw err;
+        });
+
+        archive.pipe( output );
+
+        var relsFolder   = "_rels";
+        var xlFolder     = "xl";
+        var xlRelsFolder = "xl/_rels";
+        var sheetsFolder = "xl/worksheets";
+
+        archive.append(null, { name: relsFolder + '/' });
+        archive.append(null, { name: xlFolder + '/' });
+        archive.append(null, { name: xlRelsFolder + '/' });
+        archive.append(null, { name: sheetsFolder + '/' });
 
         // create content-types
-        this._saveContents(zip);
-
+        this._saveContents( archive );
+        
         // create main relationships
-        this._saveMainRelations(relsFolder);
-
+        this._saveMainRelations( archive, relsFolder );
+        
         // create sheets relationships
-        this._saveWorkbookRelations(xlRelsFolder);
-
+        this._saveWorkbookRelations( archive, xlRelsFolder);
+        
         // create styles and the workbook
-        this._saveStyles(xlFolder);
-        this._saveWorkbook(xlFolder);
+        this._saveStyles( archive, xlFolder );
+        this._saveWorkbook( archive, xlFolder );
 
         // create sheet files
         for (var ii in this.sheets) {
@@ -1031,17 +1054,15 @@ Workbook.prototype = {
             root.att("xmlns", EXCEL_SCHEMA_MAIN);
             sheet.save(root);
 
-            var xmlString = root.end({ pretty: true, indent: '  ', newline: '\n' });
-            sheetsFolder.file("sheet" + sheet.id + ".xml", xmlString);
+            var xmlString = root.end({ pretty: false });
+            archive.append( xmlString, { name: sheetsFolder + "/" + "sheet" + sheet.id + ".xml" });
         }
 
-        // create zip
-        var data = zip.generate({base64:false,compression:'DEFLATE'});
-        fs.writeFile(fileName, data, 'binary', cb);
+        archive.finalize();
         return fileName;
     },
     // internal stuff below this line
-    _saveContents : function(zipFolder) {
+    _saveContents : function( archive ) {
         var contents = builder.create("Types",{version: '1.0', encoding: 'utf-8'});
         contents.att("xmlns",EXCEL_SCHEMA_CONTENT_TYPES);
 
@@ -1054,16 +1075,16 @@ Workbook.prototype = {
             contents.ele("Override").att("PartName",sheetName).att("ContentType",EXCEL_TYPE_SHEET);
         }
 
-        var xmlString = contents.end({ pretty: true, indent: '  ', newline: '\n' });
-        zipFolder.file("[Content_Types].xml", xmlString);
+        var xmlString = contents.end({ pretty: false });
+        archive.append( xmlString, { name: "[Content_Types].xml" });
     },
-    _saveMainRelations : function(zipFolder) {
+    _saveMainRelations : function( archive, zipFolder ) {
         var mainRelations = builder.create("Relationships",{version: '1.0', encoding: 'utf-8'});
         mainRelations.att("xmlns",EXCEL_SCHEMA_FILE_REL);
         mainRelations.ele("Relationship").att("Id","rId" + (this.relID++)).att("Type",EXCEL_SCHEMA_REL_TYPE_WB).att("Target","/xl/workbook.xml");
-        zipFolder.file(".rels", mainRelations.end({ pretty: true, indent: '  ', newline: '\n' }));
+        archive.append( mainRelations.end( { pretty: false } ), { name: zipFolder + "/" + ".rels" });
     },
-    _saveWorkbook : function(zipFolder) {
+    _saveWorkbook : function( archive, zipFolder ) {
         var workbookRelations = builder.create("workbook",{version: '1.0', encoding: 'utf-8'});
         workbookRelations.att("xmlns",EXCEL_SCHEMA_MAIN).att("xmlns:r",EXCEL_SCHEMA_DOC_REL);
 
@@ -1073,10 +1094,10 @@ Workbook.prototype = {
             sheetsEle.ele("sheet").att("name",sheet.name).att("sheetId",sheet.id).att("r:id","rId" + sheet.id);
         }
 
-        var xmlString = workbookRelations.end({ pretty: true, indent: '  ', newline: '\n' });
-        zipFolder.file("workbook.xml", xmlString);
+        var xmlString = workbookRelations.end({ pretty: false });
+        archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml" });
     },
-    _saveWorkbookRelations : function(zipFolder) {
+    _saveWorkbookRelations : function( archive, zipFolder ) {
 
         var relations = builder.create("Relationships",{version: '1.0', encoding: 'utf-8'});
         relations.att("xmlns",EXCEL_SCHEMA_FILE_REL);
@@ -1094,10 +1115,10 @@ Workbook.prototype = {
             sheetRel.att("Id","rId" + sheet.id);
         }
 
-        var xmlString = relations.end({ pretty: true, indent: '  ', newline: '\n' });
-        zipFolder.file("workbook.xml.rels", xmlString);
+        var xmlString = relations.end({ pretty: false });
+        archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml.rels" });
     },
-    _saveStyles : function(zipFolder) {
+    _saveStyles : function( archive, zipFolder ) {
 
         var stylesheet = builder.create("styleSheet",{version: '1.0', encoding: 'utf-8'});
         stylesheet.att("xmlns",EXCEL_SCHEMA_STYLES);
@@ -1127,8 +1148,8 @@ Workbook.prototype = {
         cellStyles.att("count",this.styles.countDirectStyles());
         _writeCellStyles(cellStyles, this.styles.getStyles());
 
-        var xmlString = stylesheet.end({ pretty: true, indent: '  ', newline: '\n' });
-        zipFolder.file("styles.xml", xmlString);
+        var xmlString = stylesheet.end({ pretty: false });
+        archive.append( xmlString, { name: zipFolder + "/" + "styles.xml" });
     }
 }
 

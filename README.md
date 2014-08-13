@@ -1,7 +1,7 @@
-elxml
+elxml-archiver
 =====
 
-A minimalistic Excel OOXML writer.
+A minimalistic Excel OOXML writer with archiver.
 The main purpose is to create simple Excel files via JavaScript. The current implementation supports
 
 1. Multiple sheets
@@ -15,7 +15,7 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 Most of this functionality is very basic.
 
 Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
-[node-zip](https://github.com/daraosn/node-zip) and [underscore](https://github.com/jashkenas/underscore)
+[archiver](https://github.com/ctalkington/node-archiver) and [underscore](https://github.com/jashkenas/underscore)
 
 
 ### Usage
@@ -23,7 +23,7 @@ Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
 Create a workbook:
 
 ```javascript
-var excel = require("elxml.js");
+var excel = require("elxml-archiver.js");
 var wb = excel.createWorkbook();
 ```
 
@@ -72,6 +72,30 @@ var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt});
 
 // apply the style
 cell.setStyle(dateStyle);
+```
+
+Another Example
+
+```javascript
+// create a date format
+var dateFrmt = wb.addNumberFormat("DD/MM/YYYY\\ HH:MM:SS");
+
+// create a default style
+var defStyle = wb.createStyle("Standard");
+// derive a new style from the default style
+var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt});
+
+// format value to MSDATE format
+var value = moment( "2014-06-17 08:55:49" ).toOADate();
+
+// set cell type
+var cell = row.addCell( "A" , excel.CELL_TYPE_MSDATE );
+
+// apply the style
+cell.setStyle(dateStyle);
+
+// write data to cell
+cell.setValue( value );
 ```
 
 To see which number formats are available take a look at the OOXML spec.

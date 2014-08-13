@@ -1,4 +1,4 @@
-var excel = require("../elxml.js");
+var excel = require("../elxml-archiver.js");
 
 // testing
 
@@ -64,9 +64,5 @@ cellE.setFormula("SUM(B1:D1)");
 cellE.setValue(3); // optional - should be the result of the formula
 
 // create the file
-wb.save("test.01.xlsx", function(err){
-	if (err){
-		process.exit(1);
-	}
-});
+wb.save( "test.01.xlsx" );
 
