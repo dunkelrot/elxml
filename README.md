@@ -1,7 +1,7 @@
-elxml-archiver
+elxml
 =====
 
-A minimalistic Excel OOXML writer with archiver.
+A minimalistic Excel OOXML writer.
 The main purpose is to create simple Excel files via JavaScript. The current implementation supports
 
 1. Multiple sheets
@@ -24,7 +24,7 @@ Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
 Create a workbook:
 
 ```javascript
-var excel = require("elxml-archiver.js");
+var excel = require("elxml.js");
 var wb = excel.createWorkbook();
 ```
 
