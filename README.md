@@ -107,11 +107,11 @@ Setting string values for cells is easy, by default strings are saved as inline 
 
 ```javascript
 // add a cell with a string value
-var cell2 = row.addCell("D");                           // excel.CELL_TYPE_STRING is default
-cell1.setValue("Hello World!);
+var cell2 = row.addCell("D");      // excel.CELL_TYPE_STRING is default
+cell1.setValue("Hello World!");
 
 var cell1 = row.addCell("D",excel.CELL_TYPE_STRING);    // set type
-cell2.setValue("Hello World!);
+cell2.setValue("Hello World!");
 ```
 
 In case you have tables with many similar string values you can use enable the "shared string" function.
