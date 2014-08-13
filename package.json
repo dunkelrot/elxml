@@ -2,22 +2,58 @@
   "name": "elxml",
   "description": "minimalistic excel ooxml export ",
   "homepage": "https://github.com/dunkelrot/elxml",
-  "repository": "git://github.com/dunkelrot/elxml",
-  "version": "0.1.1",
-  "author":"arndt.teinert@gmx.de>",
-  "main":"./elxml.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dunkelrot/elxml"
+  },
+  "version": "0.1.2",
+  "author": "arndt.teinert@gmx.de>",
+  "contributors": [
+    {
+      "name": "Mike Chevett",
+      "email": "mchevett@gmail.com",
+      "url": "https://github.com/chevett",
+      "contributions": 1,
+      "additions": 7,
+      "deletions": 3,
+      "hireable": false
+    },
+    {
+      "name": "",
+      "email": null,
+      "url": "https://github.com/kirisetsz",
+      "contributions": 6,
+      "additions": 84,
+      "deletions": 45,
+      "hireable": false
+    },
+    {
+      "name": null,
+      "email": null,
+      "url": "https://github.com/cowabunga1",
+      "contributions": 2,
+      "additions": 1194,
+      "deletions": 1153,
+      "hireable": true
+    },
+    {
+      "url": "https://github.com/dunkelrot",
+      "contributions": 19,
+      "additions": 13345,
+      "deletions": 2299
+    }
+  ],
+  "main": "./elxml.js",
   "dependencies": {
-    "xmlbuilder":"*",
-    "archiver":"*",
-    "underscore":"*"
+    "xmlbuilder": "*",
+    "archiver": "*",
+    "underscore": "*"
   },
   "keywords": [
     "excel",
     "xml",
     "ooxml",
     "export"
-  ],
-  "contributors": [
   ],
   "licenses": [
     {

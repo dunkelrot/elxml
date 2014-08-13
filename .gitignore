@@ -4,3 +4,5 @@ elxml.komodoproject
 /tests/test.01.xlsx
 /.idea
 elxml.iml
+npm-debug.log
+.package.json
