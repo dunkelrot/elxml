@@ -88,5 +88,9 @@ sheet.mergeCell("A2:C2");
 sheet.mergeCell("A3:A6");
 
 // create the file
-wb.save( "test.01.xlsx" );
+wb.save( "test.01.xlsx", function(err) {
+  if(err) {
+    console.error(err);
+  }
+});
 
