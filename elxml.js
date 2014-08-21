@@ -1040,7 +1040,7 @@ Workbook.prototype = {
           callback(err);
         });
 
-        output.on('end', function() {
+        output.on('finish', function() {
           callback(null);
         });
 
