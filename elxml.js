@@ -1021,10 +1021,11 @@ Workbook.prototype = {
         return this.styles.derive(style, opts)
     },
     /**
-     * @param name  the file name {string}
+     * @param fileName  the file name {string}
+     * @param callback  gets an argument (err) when an error occurs.
      * @desc saves the workbook as a Excel 2010 file.
      */
-    save : function( fileName ) {
+    save : function( fileName, callback ) {
         
         var output = fs.createWriteStream( fileName );
         var archive = archiver( 'zip' );
@@ -1036,7 +1037,11 @@ Workbook.prototype = {
         });*/
 
         archive.on('error', function(err) {
-          throw err;
+          callback(err);
+        });
+
+        archive.on('end', function() {
+          callback(null);
         });
 
         archive.pipe( output );
