@@ -19,15 +19,6 @@
       "hireable": false
     },
     {
-      "name": "",
-      "email": null,
-      "url": "https://github.com/kirisetsz",
-      "contributions": 6,
-      "additions": 84,
-      "deletions": 45,
-      "hireable": false
-    },
-    {
       "name": null,
       "email": null,
       "url": "https://github.com/cowabunga1",
@@ -37,10 +28,28 @@
       "hireable": true
     },
     {
+      "name": "Bob",
+      "email": "",
+      "url": "https://github.com/lordfriend",
+      "contributions": 3,
+      "additions": 17,
+      "deletions": 6,
+      "hireable": true
+    },
+    {
       "url": "https://github.com/dunkelrot",
-      "contributions": 19,
-      "additions": 13345,
-      "deletions": 2299
+      "contributions": 22,
+      "additions": 13559,
+      "deletions": 2323
+    },
+    {
+      "name": "",
+      "email": null,
+      "url": "https://github.com/kirisetsz",
+      "contributions": 6,
+      "additions": 84,
+      "deletions": 45,
+      "hireable": false
     }
   ],
   "main": "./elxml.js",
@@ -51,9 +60,8 @@
   },
   "keywords": [
     "excel",
-    "xml",
-    "ooxml",
-    "export"
+    "xlsx",
+    "ooxml"
   ],
   "licenses": [
     {

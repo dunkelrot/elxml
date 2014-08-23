@@ -107,10 +107,10 @@ Setting string values for cells is easy, by default strings are saved as inline 
 
 ```javascript
 // add a cell with a string value
-var cell2 = row.addCell("D");      // excel.CELL_TYPE_STRING is default
+var cell1 = row.addCell("D");      // excel.CELL_TYPE_STRING is default
 cell1.setValue("Hello World!");
 
-var cell1 = row.addCell("D",excel.CELL_TYPE_STRING);    // set type
+var cell2 = row.addCell("D",excel.CELL_TYPE_STRING);    // set type
 cell2.setValue("Hello World!");
 ```
 
@@ -192,3 +192,9 @@ sheet.mergeCell("A2:D2");
 // merge cells vertical
 sheet.mergeCell("A3:A6");
 ```
+
+#### Change history
+
+0.1.2 - add callback to Workbook.save method
+
+
