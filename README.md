@@ -196,8 +196,8 @@ sheet.mergeCell("A3:A6");
 #### Change history
 
 0.1.3 - add callback to Workbook.save method
-0.1.4 - fixed issue #9
-      - fixed issue #8
+0.1.4 - fixed issues #8, #9
+
 
 
 
