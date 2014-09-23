@@ -49,7 +49,7 @@ exports.PATTERN_TYPE_DARK_VERTICAL    = "darkVertical";
 /** @constant PATTERN_TYPE_DARK_DOWN */
 exports.PATTERN_TYPE_DARK_DOWN        = "darkDown";
 /** @constant PATTERN_TYPE_DARK_DOWN */
-exports.PATTERN_TYPE_DARK_DOWN          = "darkUp";
+exports.PATTERN_TYPE_DARK_UP          = "darkUp";
 /** @constant PATTERN_TYPE_DARK_GRID */
 exports.PATTERN_TYPE_DARK_GRID        = "darkGrid";
 /** @constant PATTERN_TYPE_DARK_TRELLIS */
@@ -354,10 +354,11 @@ Column.prototype = {
 }
 
 function Font(opts, id) {
-    // if something is changed here -> update clone as well!
+    // if something is changed here -> update clone and Fonts.deriveFromDefault as well
     this.name = opts.name;
     this.size = opts.size;
     this.bold = opts.bold;
+    this.color = opts.color;
     this.id = id;
 }
 Font.prototype = {
@@ -369,9 +370,12 @@ Font.prototype = {
         if (this.bold) {
             font.ele("b");
         }
+        if (this.color != undefined) {
+            this.color.save(font,"color");
+        }
     },
     clone : function() {
-        font = new Font({name:this.name, size:this.size, bold:this.bold}, this.id);
+        font = new Font({name:this.name, size:this.size, bold:this.bold, color:this.color}, this.id);
         return font;
     }
 }
@@ -398,6 +402,7 @@ Fonts.prototype = {
         newFont.bold = opts.bold;
         newFont.size = opts.size;
         newFont.name = opts.name;
+        newFont.color = opts.color;
         this.fonts.push(newFont);
         return newFont;
     },
