@@ -17,6 +17,9 @@ var dateFrmt = wb.addNumberFormat("dd/mm/yy;@");
 // create a bold font, the font is derived from the default font
 var boldFont = wb.addFont({bold: true});
 
+// create a bold red font, the font is derived from the default font
+var boldFontRed = wb.addFont({bold: true, color:red});
+
 // create a fill pattern, foreground color is red with a solid fill
 var redFill = wb.addPatternFill({fgColor:red, type:excel.PATTERN_TYPE_SOLID});
 
@@ -29,6 +32,9 @@ var border = wb.addBorder({bottom:thickBorderPr});
 // create the style
 var dateStyle = wb.addStyle(defStyle, {numFormat: dateFrmt, font: boldFont, fill: redFill, border: border});
 dateStyle.setAlignment(excel.CELL_ALIGNMENT_H_LEFT,null);
+
+// create a bold red text style
+var redBoldTextStyle = wb.addStyle(defStyle, {font: boldFontRed});
 
 // create a sheet
 var sheet = wb.addSheet("mySheet");
@@ -61,6 +67,7 @@ cellD.setValue(1);
 // add a cell
 var cellA8 = sheet.addRow(8).addCell("A",excel.CELL_TYPE_STRING_TAB);
 cellA8.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+cellA8.setStyle(redBoldTextStyle);
 
 // add a cell
 var cellA9 = sheet.addRow(9).addCell("A",excel.CELL_TYPE_STRING_TAB);
