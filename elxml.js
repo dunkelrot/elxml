@@ -358,6 +358,7 @@ function Font(opts, id) {
     this.name = opts.name;
     this.size = opts.size;
     this.bold = opts.bold;
+    this.italic = opts.italic;
     this.color = opts.color;
     this.id = id;
 }
@@ -370,12 +371,15 @@ Font.prototype = {
         if (this.bold) {
             font.ele("b");
         }
+        if (this.italic) {
+            font.ele("i");
+        }
         if (this.color != undefined) {
             this.color.save(font,"color");
         }
     },
     clone : function() {
-        font = new Font({name:this.name, size:this.size, bold:this.bold, color:this.color}, this.id);
+        font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, color:this.color}, this.id);
         return font;
     }
 }
@@ -383,7 +387,7 @@ function Fonts() {
     this.fontId = 0;
     this.fonts = [];
     // create a default font
-    this.defaultOpts = {bold: false, size: 11, name:"Calibri"};
+    this.defaultOpts = {bold: false, italic: false, size: 11, name:"Calibri"};
     this.addFont(this.defaultOpts);
 }
 Fonts.prototype = {
@@ -400,6 +404,7 @@ Fonts.prototype = {
         opts = (opts == undefined ? {} : opts);
         _.defaults(opts, this.defaultOpts);
         newFont.bold = opts.bold;
+        newFont.italic = opts.italic;
         newFont.size = opts.size;
         newFont.name = opts.name;
         newFont.color = opts.color;
@@ -429,6 +434,12 @@ CellAlignment.prototype = {
         }
         if (this.v != null) {
             el.att("vertical", this.v);
+        }
+        if (this.rotation != null) {
+            el.att("textRotation", this.rotation);
+        }
+        if (this.wrap) {
+            el.att("wrapText", "1");
         }
     }
 }
