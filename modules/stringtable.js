@@ -25,7 +25,7 @@ var _ = require('underscore');
 exports.createStringTable = function() {
     var strTable = new StringTable();
     return strTable;
-}
+};
 
 
 // internal stuff below this line
@@ -64,4 +64,4 @@ StringTable.prototype = {
         var xmlString = strtab.end({ pretty: false });
         archive.append(xmlString, { name: zipFolder + "/" + "sharedStrings.xml" });
     }
-}
+};

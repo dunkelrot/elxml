@@ -198,6 +198,10 @@ sheet.mergeCell("A3:A6");
 0.1.3 - add callback to Workbook.save method  
 0.1.4 - fixed issues #8, #9  
 0.1.5 - add support for italics, text rotation and text wrapping  
+0.1.6 - a 'Standard' style is created by default, access it via the getStyle function  
+ 
+
+
 
 
 

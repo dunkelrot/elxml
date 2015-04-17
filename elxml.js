@@ -183,7 +183,7 @@ var COLUMN_IDS = null;
 
 // creates the xf element
 function _writeStyle(ele, style, id) {
-    var xf = ele.ele("xf")
+    var xf = ele.ele("xf");
 
     xf.att("numFmtId", style.numFormat != null ? style.numFormat.id : 0);
     xf.att("fontId", style.font != null ? style.font.id : 0);
@@ -267,6 +267,7 @@ function Color(r, g, b, a, name) {
     this._auto = false;
     this.index = -1;
 }
+
 /**
  * @class
  */
@@ -306,7 +307,7 @@ Color.prototype = {
             ele.att("rgb",this.toHexARGB());
         }
     }
-}
+};
 
 // colum configuration
 // min is the minimal column index, max is the maximal column index
@@ -351,7 +352,7 @@ Column.prototype = {
             col.att("bestFit", this._bestFit);
         }
     }
-}
+};
 
 function Font(opts, id) {
     // if something is changed here -> update clone and Fonts.deriveFromDefault as well
@@ -382,7 +383,7 @@ Font.prototype = {
         font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, color:this.color}, this.id);
         return font;
     }
-}
+};
 function Fonts() {
     this.fontId = 0;
     this.fonts = [];
@@ -419,7 +420,7 @@ Fonts.prototype = {
             font.save(ele);
         }
     }
-}
+};
 
 function CellAlignment(h, v) {
     this.h = h;
@@ -442,7 +443,7 @@ CellAlignment.prototype = {
             el.att("wrapText", "1");
         }
     }
-}
+};
 
 /**
  * @class
@@ -468,7 +469,7 @@ BorderPr.prototype = {
         }
         borderPr.att("style", this.style);
     }
-}
+};
 
 /**
  * @class
@@ -490,7 +491,7 @@ Border.prototype = {
         this.bottom != null ? this.bottom.save(ele, "bottom") : ele.ele("bottom");
         this.diagonal != null ? this.left.save(ele, "diagonal") : ele.ele("diagonal");
     }
-}
+};
 
 // Internal list of Borders
 // The constructor adds a default border with no styles.
@@ -521,7 +522,7 @@ Borders.prototype = {
             border.save(ele);
         }
     }
-}
+};
 
 /**
  * @class
@@ -545,7 +546,7 @@ PatternFill.prototype = {
         }
         pf.att("patternType", this.type);
     }
-}
+};
 
 function Fills() {
     this.fillId = 0;
@@ -571,7 +572,7 @@ Fills.prototype = {
             fill.save(ele);
         }
     }
-}
+};
 
 /**
  * @class
@@ -582,7 +583,7 @@ function NumberFormat(id, formatCode) {
 }
 NumberFormat.prototype = {
     constructor : NumberFormat
-}
+};
 
 function NumberFormats() {
     this.formats = [];
@@ -595,7 +596,7 @@ NumberFormats.prototype = {
         this.formats.push(format);
         return format;
     }
-}
+};
 
 /**
  * @class
@@ -640,7 +641,7 @@ CellStyle.prototype = {
         this.border = style.border;
         this.alignment = style.alignment;
     }
-}
+};
 
 function CellStyles() {
     this.nextStyleId = 0;
@@ -648,15 +649,34 @@ function CellStyles() {
 }
 CellStyles.prototype = {
     constructor : CellStyles,
+    /**
+     * Creates a new CellStyle with the given name IF such a CellStyle is not already defined.
+     * The new or existing CellStyle is returned.
+     * Note that a new CellStyle is always returned IF name is null.
+     * @param name
+     * @returns {*|null}
+     */
     create : function(name) {
-        var style = new CellStyle(name, this.nextStyleId++);
-        this.styles.push(style);
+        var style = this.getStyle(name);
+        if (style == null) {
+            style = new CellStyle(name, this.nextStyleId++);
+            this.styles.push(style);
+        }
         return style;
     },
+    /**
+     * Creates a new style based on an existing style.
+     * The new style gets a name like "elxmlStyle_id" where id is the unique style id.
+     * 
+     * @param cellStyle     the style to derive from
+     * @param opts          options for the new style
+     * @returns {CellStyle} the new style
+     */
     derive : function(cellStyle, opts) {
         opts = (opts == undefined ? {} : opts);
         _.defaults(opts, {numFormat: null, fill: null, font: null, border: null});
-        var style = new CellStyle(null, this.nextStyleId++);
+        this.nextStyleId++;
+        var style = new CellStyle("elxmlStyle_" + this.nextStyleId, this.nextStyleId);
         style.apply(cellStyle);
 
         if (opts.numFormat != null) {
@@ -687,13 +707,37 @@ CellStyles.prototype = {
         }
         return count;
     },
+    /**
+     * Returns the current number of CellStyle instances managed by this.
+     * @returns {Number}
+     */
     count : function() {
         return this.styles.length;
     },
+    /**
+     * Returns the internal array of CellStyle instances.
+     * @returns {Array}
+     */
     getStyles : function() {
         return this.styles;
+    },
+    /**
+     * Returns a style by name.
+     * @param name  the name of the style to return, if null no style is returned
+     * @returns null if no style with the given name is found or name is null, otherwise an instance of CellStyle with the given name
+     */
+    getStyle : function(name) {
+        var style = null;
+        if (name != null) {
+            this.styles.forEach(function (st) {
+                if (st.name == name) {
+                    style = st;
+                }
+            });
+        }
+        return style;
     }
-}
+};
 
 /**
  * @class
@@ -758,7 +802,7 @@ Cell.prototype = {
             ele.att("s", this.style.id);
         }
     }
-}
+};
 
 /**
  * @class
@@ -794,7 +838,7 @@ Row.prototype = {
             this.cells[ii].save(ele);
         }
     }
-}
+};
 
 /**
  * @class
@@ -811,7 +855,7 @@ MergeCell.prototype = {
         var ele = mergeCells.ele("mergeCell");
         ele.att("ref", this.range);
     }
-}
+};
 
 /**
  * @class
@@ -889,16 +933,28 @@ Sheet.prototype = {
             }
         }
     }
-}
+};
 
 /**
  * @constructor
  * @class
+ * @param opts  options - standard:true = create a "Standard" style
+ * 
+ * Each Workbook has a default CellStyle named "Standard", use this to derive
+ * new styles.
  */
-function Workbook () {
+function Workbook (opts) {
+    opts = (opts == undefined ? {} : opts);
+    _.defaults(opts, {standard:true});
+
     this.sheets = [];
     this.relID = 1;
+    
     this.styles = new CellStyles();
+    if (opts.standard == true) {
+        this.styles.create("Standard");
+    }
+    
     this.numberFormats = new NumberFormats();
     this.fills = new Fills();
     this.fonts = new Fonts();
@@ -917,6 +973,14 @@ Workbook.prototype = {
      */
     createStyle : function(name) {
         return this.styles.create(name);
+    },
+    /**
+     * Returns a style by name.
+     * @param name  
+     * @returns {*|null}
+     */
+    getStyle : function(name) {
+        return this.styles.getStyle(name);
     },
     /**
      * @param name - the sheet name {string}
@@ -1046,7 +1110,7 @@ Workbook.prototype = {
         var output = fs.createWriteStream( fileName );
         var archive = archiver( 'zip' );
 
-        // for debuging
+        // for debugging
         /*output.on('close', function() {
           console.log(archive.pointer() + ' total bytes');
           console.log('archiver has been finalized and the output file descriptor has closed.');
@@ -1199,5 +1263,6 @@ Workbook.prototype = {
         var xmlString = stylesheet.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "styles.xml" });
     }
-}
+};
+
 

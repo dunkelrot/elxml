@@ -5,8 +5,8 @@ var excel = require("../elxml.js");
 // create a workbook
 var wb = excel.createWorkbook();
 
-// create a default style
-var defStyle = wb.createStyle("Standard");
+// by default a default style is available, new styles have to be created with wb.createStyle('name') or wb.addStyle
+var defStyle = wb.getStyle("Standard");
 
 var red = wb.color(255,0,0,0);
 var black = wb.color(0,0,0,255);
