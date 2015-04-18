@@ -378,7 +378,7 @@ Font.prototype = {
         }
     },
     clone : function() {
-        font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, color:this.color}, this.id);
+        var font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, color:this.color}, this.id);
         return font;
     }
 };
@@ -980,7 +980,7 @@ Workbook.prototype = {
     },
     /**
      * @param name - the sheet name {string}
-     * @returns a new {@linkcode Sheet}
+     * @returns {@linkcode Sheet}
      */
     addSheet : function(name) {
         var sheet = new Sheet(this.relID++, name, this.strTable);
@@ -1011,7 +1011,7 @@ Workbook.prototype = {
      * @param r - red value (0-255) {number}
      * @param g - green value (0-255) {number}
      * @param b - blue value (0-255) {number}
-     * @returns a {@linkcode Color}
+     * @returns {@linkcode Color}
      */
     color : function(r,g,b) {
         return new Color(r,g,b,0);
