@@ -152,7 +152,7 @@ exports.CELL_FORMULA_NORMAL = "normal";
  */
 exports.createWorkbook = function() {
     return new Workbook();
-}
+};
 
 // all internal stuff below this line
 
@@ -164,10 +164,10 @@ exports.createWorkbook = function() {
 // schemas and content-types
 var EXCEL_SCHEMA_MAIN          = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 var EXCEL_SCHEMA_CONTENT_TYPES = "http://schemas.openxmlformats.org/package/2006/content-types";
-var EXCEL_SCHEMA_FILE_REL      = "http://schemas.openxmlformats.org/package/2006/relationships"
+var EXCEL_SCHEMA_FILE_REL      = "http://schemas.openxmlformats.org/package/2006/relationships";
 var EXCEL_SCHEMA_DOC_REL       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 var EXCEL_SCHEMA_REL_TYPE_WB   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
-var EXCEL_SCHEMA_REL_STYLES    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+var EXCEL_SCHEMA_REL_STYLES    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles";
 var EXCEL_SCHEMA_REL_SHEET     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet";
 var EXCEL_SCHEMA_REL_STRTAB    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings";
 var EXCEL_SCHEMA_STYLES        = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
@@ -218,8 +218,7 @@ function _writeStyle(ele, style, id) {
 // don't have a parent style
 function _writeXF(ele, styles, all) {
 
-    for (var ii in styles) {
-        var style = styles[ii];
+    styles.forEach(function(style) {
         if (style.parentStyle == null || all == true) {
             var id = style.id;
             // use parent ID (which is a zero-based index) for derived styles
@@ -232,17 +231,16 @@ function _writeXF(ele, styles, all) {
             }
             _writeStyle(ele, style, id);
         }
-    }
+    });
 }
 
 // adds cellStyle elements to cellStyles for all styles without a parent style
 function _writeCellStyles(cellStyles, styles) {
-    for (var ii in styles) {
-        var style = styles[ii];
+    styles.forEach(function(style) {
         if (style.parentStyle == null) {
             cellStyles.ele("cellStyle").att("name", style.name).att("xfId", style.id).att("builtinId",0);
         }
-    }
+    });
 }
 
 /**
@@ -415,10 +413,9 @@ Fonts.prototype = {
     save : function(stylesheet) {
         var ele = stylesheet.ele("fonts");
         ele.att("count", this.fonts.length);
-        for (var ii in this.fonts) {
-            var font = this.fonts[ii];
+        this.fonts.forEach(function(font) {
             font.save(ele);
-        }
+        });
     }
 };
 
@@ -517,10 +514,9 @@ Borders.prototype = {
     save : function(stylesheet) {
         var ele = stylesheet.ele("borders");
         ele.att("count", this.borders.length);
-        for (var ii in this.borders) {
-            var border = this.borders[ii];
+        this.borders.forEach(function(border) {
             border.save(ele);
-        }
+        })
     }
 };
 
@@ -567,10 +563,9 @@ Fills.prototype = {
     save : function(stylesheet) {
         var ele = stylesheet.ele("fills");
         ele.att("count", this.fills.length);
-        for (var ii in this.fills) {
-            var fill = this.fills[ii];
+        this.fills.forEach(function(fill) {
             fill.save(ele);
-        }
+        });
     }
 };
 
@@ -700,11 +695,11 @@ CellStyles.prototype = {
     },
     countDirectStyles : function() {
         var count = 0;
-        for (var ii in this.styles) {
-            if (this.styles[ii].parentStyle == null) {
+        this.styles.forEach(function(style) {
+            if (style.parentStyle == null) {
                 count++;
             }
-        }
+        });
         return count;
     },
     /**
@@ -834,9 +829,9 @@ Row.prototype = {
             ele.att("ht", this.height);
             ele.att("customHeight", 1);
         }
-        for (var ii in this.cells) {
-            this.cells[ii].save(ele);
-        }
+        this.cells.forEach(function(cell) {
+            cell.save(ele);
+        });
     }
 };
 
@@ -861,6 +856,7 @@ MergeCell.prototype = {
  * @class
  * @param id {number} the sheet id
  * @param name {string} the sheet name
+ * @param strTable the string table, used to reuse strings
  * @desc Don't use this constructor, use {@linkcode Workbook#addSheet} instead.
  */
 function Sheet(id, name, strTable) {
@@ -915,22 +911,22 @@ Sheet.prototype = {
     save : function(root) {
         if (this.cols.length > 0) {
             var colsEle = root.ele("cols");
-            for (var ii in this.cols) {
-                this.cols[ii].save(colsEle);
-            }
+            this.cols.forEach(function(col) {
+                col.save(colsEle);
+            });
         }
         if (this.rows.length > 0) {
-            var sheetData = root.ele("sheetData")
-            for (var ii in this.rows) {
-                this.rows[ii].save(sheetData);
-            }
+            var sheetData = root.ele("sheetData");
+            this.rows.forEach(function(row) {
+                row.save(sheetData);
+            });
         }
         if (this.merges.length > 0) {
             var mergeCells = root.ele("mergeCells");
             mergeCells.att('count', this.merges.length);
-            for (var ii in this.merges) {
-              this.merges[ii].save(mergeCells);
-            }
+            this.merges.forEach(function(merge) {
+                merge.save(mergeCells);
+            });
         }
     }
 };
@@ -1032,8 +1028,8 @@ Workbook.prototype = {
      * @param opts the number format options @type {NumberFormatOpts}
      * @returns a {NumberFormat}
      */
-    addNumberFormat : function(value) {
-        return this.numberFormats.add(value);
+    addNumberFormat : function(opts) {
+        return this.numberFormats.add(opts);
     },
     /**
      * @param opts the fonts options @type {FontOpts}
@@ -1049,7 +1045,7 @@ Workbook.prototype = {
      * @property {Color} fgColor - the foreground color
      * @property {Color} bgColor - the background color
      * @property {string} type - pattern type
-     * @desc You should specifiy the type, fgColor and bgColor are optional.
+     * @desc You should specify the type, fgColor and bgColor are optional.
      */
 
     /**
@@ -1150,16 +1146,14 @@ Workbook.prototype = {
         this._saveWorkbook( archive, xlFolder );
 
         // create sheet files
-        for (var ii in this.sheets) {
-            var sheet = this.sheets[ii];
-
+        this.sheets.forEach(function(sheet) {
             var root = builder.create("worksheet", {version: '1.0', encoding: 'utf-8'});
             root.att("xmlns", EXCEL_SCHEMA_MAIN);
             sheet.save(root);
 
             var xmlString = root.end({ pretty: false });
             archive.append( xmlString, { name: sheetsFolder + "/" + "sheet" + sheet.id + ".xml" });
-        }
+        });
 
         // save the StringTable
         this.strTable.save( archive, xlFolder );
@@ -1177,10 +1171,10 @@ Workbook.prototype = {
         contents.ele("Override").att("PartName","/xl/styles.xml").att("ContentType",EXCEL_TYPE_STYLES);
         contents.ele("Override").att("PartName","/xl/sharedStrings.xml").att("ContentType",EXCEL_TYPE_STRINGTABLE);
 
-        for (var ii in this.sheets) {
-            var sheetName = "/xl/worksheets/sheet" + this.sheets[ii].id + ".xml";
+        this.sheets.forEach(function(sheet) {
+            var sheetName = "/xl/worksheets/sheet" + sheet.id + ".xml";
             contents.ele("Override").att("PartName",sheetName).att("ContentType",EXCEL_TYPE_SHEET);
-        }
+        });
 
         var xmlString = contents.end({ pretty: false });
         archive.append( xmlString, { name: "[Content_Types].xml" });
@@ -1196,10 +1190,9 @@ Workbook.prototype = {
         workbookRelations.att("xmlns",EXCEL_SCHEMA_MAIN).att("xmlns:r",EXCEL_SCHEMA_DOC_REL);
 
         var sheetsEle = workbookRelations.ele("sheets");
-        for (var ii in this.sheets) {
-            var sheet = this.sheets[ii];
+        this.sheets.forEach(function(sheet) {
             sheetsEle.ele("sheet").att("name",sheet.name).att("sheetId",sheet.id).att("r:id","rId" + sheet.id);
-        }
+        });
 
         var xmlString = workbookRelations.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml" });
@@ -1219,13 +1212,12 @@ Workbook.prototype = {
         sheetRel.att("Target","/xl/sharedStrings.xml");
         sheetRel.att("Id","rId" + (this.relID++));
 
-        for (var ii in this.sheets) {
-            var sheet = this.sheets[ii];
+        this.sheets.forEach(function(sheet) {
             var sheetRel = relations.ele("Relationship");
             sheetRel.att("Type",EXCEL_SCHEMA_REL_SHEET);
             sheetRel.att("Target","/xl/worksheets/sheet" + sheet.id + ".xml");
             sheetRel.att("Id","rId" + sheet.id);
-        }
+        });
 
         var xmlString = relations.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml.rels" });
@@ -1238,10 +1230,9 @@ Workbook.prototype = {
         // number formats
         var numFmts = stylesheet.ele("numFmts");
         numFmts.att("count", this.numberFormats.formats.length);
-        for (var ii in this.numberFormats.formats) {
-            var fmt = this.numberFormats.formats[ii];
+        this.numberFormats.formats.forEach(function(fmt) {
             numFmts.ele("numFmt").att("numFmtId", fmt.id).att("formatCode", fmt.formatCode);
-        }
+        });
 
         this.fonts.save(stylesheet);
         this.fills.save(stylesheet);
