@@ -1102,22 +1102,31 @@ Workbook.prototype = {
      * @desc saves the workbook as a Excel 2010 file.
      */
     save : function( fileName, callback ) {
-        
         var output = fs.createWriteStream( fileName );
+        this.saveToStream(output, callback);
+        return fileName;
+    },
+    /**
+     * @param output  the file name {string}
+     * @param callback  gets an argument (err) when an error occurs.
+     * @desc saves the workbook as a Excel 2010 file.
+     */
+    saveToStream : function( output, callback ) {
+
         var archive = archiver( 'zip' );
 
         // for debugging
         /*output.on('close', function() {
-          console.log(archive.pointer() + ' total bytes');
-          console.log('archiver has been finalized and the output file descriptor has closed.');
-        });*/
+         console.log(archive.pointer() + ' total bytes');
+         console.log('archiver has been finalized and the output file descriptor has closed.');
+         });*/
 
         archive.on('error', function(err) {
-          callback(err);
+            callback(err);
         });
 
         output.on('finish', function() {
-          callback(null);
+            callback(null);
         });
 
         archive.pipe( output );
@@ -1134,13 +1143,13 @@ Workbook.prototype = {
 
         // create content-types
         this._saveContents( archive );
-        
+
         // create main relationships
         this._saveMainRelations( archive, relsFolder );
-        
+
         // create sheets relationships
         this._saveWorkbookRelations( archive, xlRelsFolder);
-        
+
         // create styles and the workbook
         this._saveStyles( archive, xlFolder );
         this._saveWorkbook( archive, xlFolder );
@@ -1159,8 +1168,8 @@ Workbook.prototype = {
         this.strTable.save( archive, xlFolder );
 
         archive.finalize();
-        return fileName;
     },
+    
     // internal stuff below this line
     _saveContents : function( archive ) {
         var contents = builder.create("Types",{version: '1.0', encoding: 'utf-8'});

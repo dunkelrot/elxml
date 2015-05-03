@@ -2,6 +2,10 @@ elxml
 =====
 
 A minimalistic Excel OOXML writer.
+
+[![NPM Version](http://img.shields.io/npm/v/elxml.svg?style=flat-square)](https://npmjs.com/package/elxml)
+[![License](http://img.shields.io/npm/l/elxml.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+
 The main purpose is to create simple Excel files via JavaScript. The current implementation supports
 
 1. Multiple sheets
@@ -13,7 +17,7 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 7. Fonts for cells
 8. Merge cells
 
-Most of this functionality is very basic.
+elxml allows to use string tables to save memory.
 
 Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
 [archiver](https://github.com/ctalkington/node-archiver) and [underscore](https://github.com/jashkenas/underscore)
@@ -45,7 +49,13 @@ cell.setValue("2014-02-02");
 Last step is to save the workbook:
 
 ```javascript
-wb.save("test.01.xlsx");
+wb.save("test.01.xlsx", function(err) {
+    if (!err) {
+        console.log("File saved!");
+    } else {
+        console.log(err);
+    }
+});
 ```
 
 ### Advanced usage
@@ -68,6 +78,10 @@ var dateFrmt = wb.addNumberFormat("dd/mm/yy;@");
 
 // create a default style
 var defStyle = wb.createStyle("Standard");
+
+// Note: Starting with 0.1.6 you should use
+// var defStyle = wb.getStyle("Standard");
+
 // derive a new style from the default style
 var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt});
 
@@ -103,7 +117,7 @@ To see which number formats are available take a look at the OOXML spec.
 
 #### Strings
 
-Setting string values for cells is easy, by default strings are saved as inline strings.
+By default strings are saved as inline strings.
 
 ```javascript
 // add a cell with a string value
@@ -114,7 +128,7 @@ var cell2 = row.addCell("D",excel.CELL_TYPE_STRING);    // set type
 cell2.setValue("Hello World!");
 ```
 
-In case you have tables with many similar string values you can use enable the "shared string" function.
+In case you have tables with many similar string values you can enable the "shared string" function.
 Note that this must be done for every cell as inline strings are the default.
 
 ```javascript
@@ -173,7 +187,7 @@ cell.setStyle(boldFontStyle);
 
 #### Column width
 
-It is simple to define the widht for one or more columns.
+Define the width for one or more columns:
 
 ```javascript
 // set the width of the first column to 30
@@ -183,8 +197,6 @@ sheet.setColumn(2,5,50);
 ```
 
 #### Merge cells
-
-It is simple to merge cells
 
 ```javascript
 // merge cells horizontal
@@ -199,6 +211,7 @@ sheet.mergeCell("A3:A6");
 0.1.4 - fixed issues #8, #9  
 0.1.5 - add support for italics, text rotation and text wrapping  
 0.1.6 - a 'Standard' style is created by default, access it via the getStyle function  
+0.2.0 - add Workbook.saveToStream to save the resulting ZIP directly to a file stream
  
 
 

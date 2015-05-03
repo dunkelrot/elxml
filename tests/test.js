@@ -1,3 +1,4 @@
+var fs = require("fs");
 var excel = require("../elxml.js");
 
 // testing
@@ -103,3 +104,11 @@ wb.save( "test.01.xlsx", function(err) {
   }
 });
 
+var fileStream = fs.createWriteStream("testStream.01.xlsx");
+wb.saveToStream( fileStream, function(err) {
+  if(err) {
+    console.error(err);
+  } else {
+    console.log('save top stream successful');
+  }
+});

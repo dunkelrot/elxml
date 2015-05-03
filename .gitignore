@@ -2,6 +2,7 @@
 /node_modules
 elxml.komodoproject
 /tests/test.01.xlsx
+/tests/testStream.01.xlsx
 /.idea
 elxml.iml
 npm-debug.log
