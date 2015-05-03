@@ -670,8 +670,10 @@ CellStyles.prototype = {
     derive : function(cellStyle, opts) {
         opts = (opts == undefined ? {} : opts);
         _.defaults(opts, {numFormat: null, fill: null, font: null, border: null});
-        this.nextStyleId++;
+        
         var style = new CellStyle("elxmlStyle_" + this.nextStyleId, this.nextStyleId);
+        this.nextStyleId++;
+        
         style.apply(cellStyle);
 
         if (opts.numFormat != null) {

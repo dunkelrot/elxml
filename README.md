@@ -211,8 +211,9 @@ sheet.mergeCell("A3:A6");
 0.1.4 - fixed issues #8, #9  
 0.1.5 - add support for italics, text rotation and text wrapping  
 0.1.6 - a 'Standard' style is created by default, access it via the getStyle function  
-0.2.0 - add Workbook.saveToStream to save the resulting ZIP directly to a file stream
- 
+0.2.0 - add Workbook.saveToStream to save the resulting ZIP directly to a file stream  
+0.2.1 - fixed issue with wrong style IDs  
+
 
 
 
