@@ -345,6 +345,7 @@ Column.prototype = {
         col.att("max", this._max);
         if (this._width > 0) {
             col.att("width", this._width);
+            col.att("customWidth", "1");
         }
         if (this._bestFit != undefined) {
             col.att("bestFit", this._bestFit);
@@ -419,9 +420,10 @@ Fonts.prototype = {
     }
 };
 
-function CellAlignment(h, v) {
+function CellAlignment(h, v, wrap) {
     this.h = h;
     this.v = v;
+    this.wrap = !!wrap;
 }
 CellAlignment.prototype = {
     constructor : CellAlignment,
@@ -613,8 +615,8 @@ function CellStyle(name, id) {
 }
 CellStyle.prototype = {
     constructor : CellStyle,
-    setAlignment : function(h, v) {
-        this.alignment = new CellAlignment(h,v);
+    setAlignment : function(h, v, w) {
+        this.alignment = new CellAlignment(h,v,w);
         this.applyAlignment = 1;
         return this;
     },
