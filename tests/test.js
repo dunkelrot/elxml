@@ -37,6 +37,9 @@ dateStyle.setAlignment(excel.CELL_ALIGNMENT_H_LEFT,null);
 // create a bold red text style
 var redBoldTextStyle = wb.addStyle(defStyle, {font: boldFontRed});
 
+var redBoldTextStyleWrapText = wb.addStyle(redBoldTextStyle);
+redBoldTextStyleWrapText.setWrapText(true);
+
 // create a sheet
 var sheet = wb.addSheet("mySheet");
 
@@ -72,7 +75,8 @@ cellA8.setStyle(redBoldTextStyle);
 
 // add a cell
 var cellA9 = sheet.addRow(9).addCell("A",excel.CELL_TYPE_STRING_TAB);
-cellA9.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+cellA9.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern - WRAP TEXT");
+cellA9.setStyle(redBoldTextStyleWrapText);
 
 // add a cell
 var cellA10 = sheet.addRow(10).addCell("A",excel.CELL_TYPE_STRING_TAB);
