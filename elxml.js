@@ -193,22 +193,20 @@ function _writeStyle(ele, style, id) {
     if (id != null) {
         xf.att("xfId",id);
     }
-    if (style.applyNumFormat != 0) {
+    if (style.numFormat != 0) {
         xf.att("applyNumberFormat",1);
     }
-    if (style.applyFont != 0) {
+    if (style.font != 0) {
         xf.att("applyFont",1);
     }
-    if (style.applyAlignment != 0) {
-        xf.att("applyAlignment",1);
-    }
-    if (style.applyBorder != 0) {
+    if (style.border != 0) {
         xf.att("applyBorder",1);
     }
-    if (style.applyFill != 0) {
+    if (style.fill != 0) {
         xf.att("applyFill",1);
     }
     if (style.alignment != null) {
+        xf.att("applyAlignment",1);
         style.alignment.save(xf);
     }
 }
@@ -606,35 +604,31 @@ function CellStyle(name, id) {
     this.font = null;
     this.fill = null;
     this.border = null;
-    this.applyNumFormat = 0;
-    this.applyFont = 0;
-    this.applyAlignment = 0;
-    this.applyBorder = 0;
-    this.applyFill = 0;
-    this.alignment = null;
+    this.alignment = new CellAlignment(null, null, false);
 }
 CellStyle.prototype = {
     constructor : CellStyle,
     setAlignment : function(h, v, w) {
-        this.alignment = new CellAlignment(h,v,w);
-        this.applyAlignment = 1;
+        this.alignment = new CellAlignment(h, v, w);
+        return this;
+    },
+    setWrapText : function(w) {
+        this.alignment = new CellAlignment(this.alignment.h, this.alignment.v, w);
         return this;
     },
     setFont : function(font) {
         this.font = font;
-        this.applyFont = 1;
         return this;
     },
     setBorder : function (border) {
         this.border = border;
-        this.applyBorder = 1;
         return this;
     },
     apply : function(style) {
         this.parentStyle = style;
+        this.fill = style.fill;
         this.font = style.font;
         this.numFormat = style.numFormat;
-        this.fill = style.fill;
         this.border = style.border;
         this.alignment = style.alignment;
     }
@@ -680,19 +674,15 @@ CellStyles.prototype = {
 
         if (opts.numFormat != null) {
             style.numFormat = opts.numFormat;
-            style.applyNumFormat = 1;
         }
         if (opts.font != null) {
             style.font = opts.font;
-            style.applyFont = 1;
         }
         if (opts.fill != null) {
             style.fill = opts.fill;
-            style.applyFill = 1;
         }
         if (opts.border != null) {
             style.border = opts.border;
-            style.applyBorder = 1;
         }
         this.styles.push(style);
         return style;
