@@ -63,10 +63,5 @@
     "xlsx",
     "ooxml"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://opensource.org/licenses/mit-license.php"
-    }
-  ]
+  "license" : "MIT"
 }
