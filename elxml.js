@@ -148,6 +148,18 @@ exports.CELL_TYPE_FORMULA  = "str";
 exports.CELL_FORMULA_NORMAL = "normal";
 
 /**
+ * @constant AUTO_FILTER_COLOR_FONT
+ * @desc to filter by cell font color
+ */
+exports.AUTO_FILTER_COLOR_FONT = 0;
+
+/**
+ * @constant AUTO_FILTER_COLOR_FILL
+ * @desc to filter by cell fill color
+ */
+exports.AUTO_FILTER_COLOR_FILL = 1;
+
+/**
  * Creates a {@linkcode Workbook} instance
  */
 exports.createWorkbook = function() {
@@ -242,6 +254,98 @@ function _writeCellStyles(cellStyles, styles) {
 }
 
 /**
+ * The AutoFilter definition for a single column.
+ * 
+ * @param colId
+ * @constructor
+ */
+function FilterColumn(colId) {
+    this.colId = colId;
+    this.filters = [];
+    this.hiddenButton = false;
+    this.showButton = true;
+    this.colorFilter = null;
+}
+
+FilterColumn.prototype = {
+    constructor : FilterColumn,
+    /**
+     * Adds a simple value filter.
+     * @param value
+     * @returns {FilterColumn}
+     */
+    addFilter : function(value) {
+        this.filters.push(value);
+        return this;
+    },
+    /**
+     * Sets the color to filter for.
+     * @param fill  use a PatternFill
+     * @param type  the type, either AUTO_FILTER_COLOR_FILL or AUTO_FILTER_COLOR_FONT
+     * @returns {FilterColumn}
+     */
+    setColorFilter : function(fill, type) {
+        this.colorFilter = {fill:fill, type:type};
+        return this;
+    },
+    setShowButton : function(flag) {
+        this.showButton = flag;
+        return this;
+    },
+    setHiddenButton : function(flag) {
+        this.hiddenButton = flag;
+        return this;
+    },
+    save : function(parent) {
+        var xFilterColumn = parent.ele("filterColumn");
+        if (this.filters.length != 0) {
+            var xFilters = xFilterColumn.ele("filters");
+            this.filters.forEach(function (filter) {
+                xFilters.ele("filter").att("val", filter);
+            });
+        }
+        xFilterColumn.att("colId", this.colId);
+        xFilterColumn.att("hiddenButton", this.hiddenButton);
+        xFilterColumn.att("showButton", this.showButton);
+        
+        if (this.colorFilter != null) {
+            xFilterColumn.ele("colorFilter")
+                .att("dxfId", this.colorFilter.fill.getDxfsId())
+                .att("cellColor", this.colorFilter.type);
+        }
+    }
+};
+
+function AutoFilter(ref) {
+    this.ref = ref;
+    this.filters = [];
+}
+
+AutoFilter.prototype = {
+    constructor : AutoFilter,
+    /**
+     * Add a filter definition for the given column within the AutoFilter range
+     * NOTE: As far as I know there is no way to let Excel apply the filter upon loading the file.
+     * 
+     * @param colId zero based ID
+     * @returns {FilterColumn}
+     */
+    addFilter : function(colId) {
+        var fCol = new FilterColumn(colId);
+        this.filters.push(fCol);
+        return fCol;
+    },
+    save : function(parent) {
+        var xAutoFilter = parent.ele("autoFilter");
+        xAutoFilter.att("ref", this.ref);
+        this.filters.forEach(function(filter) {
+            filter.save(xAutoFilter);
+        });
+    }
+};
+
+
+/**
  * @constructor
  * @param r - red (0-255) {number}
  * @param g - green (0-255) {number}
@@ -263,6 +367,7 @@ function Color(r, g, b, a, name) {
     this._auto = false;
     this.index = -1;
 }
+
 
 /**
  * @class
@@ -528,9 +633,19 @@ function PatternFill(opts, id) {
     this.bgColor = opts.bgColor;
     this.type = opts.type;
     this.id = id;
+    this.dxfsId = 0;
 }
 PatternFill.prototype = {
     constructor : PatternFill,
+    getId : function() {
+        return this.id;
+    },
+    getDxfsId : function() {
+        return this.dxfsId;
+    },
+    setDxfsId : function(id) {
+        this.dxfsId = id;
+    },
     save : function(fills) {
         var fill = fills.ele("fill");
         var pf = fill.ele("patternFill");
@@ -565,6 +680,14 @@ Fills.prototype = {
         ele.att("count", this.fills.length);
         this.fills.forEach(function(fill) {
             fill.save(ele);
+        });
+    },
+    saveDxfs : function(stylesheet) {
+        var dxfs = stylesheet.ele("dxfs");
+        dxfs.att("count", this.fills.length);
+        this.fills.forEach(function(fill, index) {
+            fill.save(dxfs.ele("dxf"));
+            fill.setDxfsId(index);
         });
     }
 };
@@ -860,6 +983,7 @@ function Sheet(id, name, strTable) {
     this.cols = [];
     this.merges = [];
     this.strTable = strTable;
+    this.autoFilter = null;
 }
 Sheet.prototype = {
     constructor : Sheet,
@@ -902,6 +1026,22 @@ Sheet.prototype = {
         this.merges.push(merge);
         return merge;
     },
+    /**
+     * 
+     * @param range {string} range identifier (eg. 'A1:B2'), if null auto filter is disabled
+     * @desc enable auto filter for the given range 
+     */
+    setAutoFilter : function(range) {
+        if (range == null) {
+            this.autoFilter = null;
+        } else {
+            this.autoFilter = new AutoFilter(range);
+        }
+        return this.autoFilter;
+    },
+    getAutoFilter : function() {
+        return this.autoFilter;
+    },
     save : function(root) {
         if (this.cols.length > 0) {
             var colsEle = root.ele("cols");
@@ -914,6 +1054,9 @@ Sheet.prototype = {
             this.rows.forEach(function(row) {
                 row.save(sheetData);
             });
+        }
+        if (this.autoFilter != null) {
+            this.autoFilter.save(root);
         }
         if (this.merges.length > 0) {
             var mergeCells = root.ele("mergeCells");
@@ -1197,6 +1340,8 @@ Workbook.prototype = {
             sheetsEle.ele("sheet").att("name",sheet.name).att("sheetId",sheet.id).att("r:id","rId" + sheet.id);
         });
 
+        workbookRelations.ele("calcPr").att("fullCalcOnLoad",true);
+        
         var xmlString = workbookRelations.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml" });
     },
@@ -1254,6 +1399,8 @@ Workbook.prototype = {
         cellStyles.att("count",this.styles.countDirectStyles());
         _writeCellStyles(cellStyles, this.styles.getStyles());
 
+        this.fills.saveDxfs(stylesheet);
+        
         var xmlString = stylesheet.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "styles.xml" });
     }

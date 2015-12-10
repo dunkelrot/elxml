@@ -49,7 +49,7 @@ StringTable.prototype = {
         if (value in this.strTable) {
             return this.strTable[value];
         } else {
-            var id = _.size(this.strTabel);
+            var id = _.size(this.strTable);
             this.strTable[value] = id;
             this.strings.push(value);
             return id;

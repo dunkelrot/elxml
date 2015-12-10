@@ -205,6 +205,13 @@ sheet.mergeCell("A2:D2");
 sheet.mergeCell("A3:A6");
 ```
 
+#### AutoFilter
+
+```javascript
+// use a range which contains data! 
+sheet.setAutoFilter("A1:D1");
+```
+
 #### Change history
 
 0.1.3 - add callback to Workbook.save method  
@@ -213,6 +220,9 @@ sheet.mergeCell("A3:A6");
 0.1.6 - a 'Standard' style is created by default, access it via the getStyle function  
 0.2.0 - add Workbook.saveToStream to save the resulting ZIP directly to a file stream  
 0.2.1 - fixed issue with wrong style IDs  
+0.3.0 - add basic support for AutoFilter, fixed error in string table  
+
+
 
 
 

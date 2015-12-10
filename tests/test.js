@@ -40,6 +40,8 @@ var redBoldTextStyle = wb.addStyle(defStyle, {font: boldFontRed});
 var redBoldTextStyleWrapText = wb.addStyle(redBoldTextStyle);
 redBoldTextStyleWrapText.setWrapText(true);
 
+var redFillStyle = wb.addStyle(defStyle, {fill: redFill});
+
 // create a sheet
 var sheet = wb.addSheet("mySheet");
 
@@ -70,17 +72,17 @@ cellD.setValue(1);
 
 // add a cell
 var cellA8 = sheet.addRow(8).addCell("A",excel.CELL_TYPE_STRING_TAB);
-cellA8.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+cellA8.setValue("1 Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
 cellA8.setStyle(redBoldTextStyle);
 
 // add a cell
 var cellA9 = sheet.addRow(9).addCell("A",excel.CELL_TYPE_STRING_TAB);
-cellA9.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern - WRAP TEXT");
+cellA9.setValue("2 Franz jagt im komplett verwahrlosten Taxi quer durch Bayern - WRAP TEXT");
 cellA9.setStyle(redBoldTextStyleWrapText);
 
 // add a cell
 var cellA10 = sheet.addRow(10).addCell("A",excel.CELL_TYPE_STRING_TAB);
-cellA10.setValue("Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
+cellA10.setValue("3 Franz jagt im komplett verwahrlosten Taxi quer durch Bayern.");
 
 // add a cell - use default type (CELL_TYPE_STRING)
 var cellA11 = sheet.addRow(11).addCell("A");
@@ -98,6 +100,24 @@ cellE.setValue(3); // optional - should be the result of the formula
 // merge cells
 sheet.mergeCell("A2:C2");
 sheet.mergeCell("A3:A6");
+
+
+var afSheet = wb.addSheet("autoFilter");
+
+var cell = afSheet.addRow(1).addCell("A",excel.CELL_TYPE_STRING);
+cell.setValue("Name");
+
+cell = afSheet.addRow(2).addCell("B",excel.CELL_TYPE_STRING);
+cell.setValue("123");
+
+cell = afSheet.addRow(3).addCell("C",excel.CELL_TYPE_STRING);
+cell.setValue("456");
+
+cell = afSheet.addRow(4).addCell("D",excel.CELL_TYPE_STRING_TAB);
+cell.setValue("789");
+cell.setStyle(redFillStyle);
+
+afSheet.setAutoFilter("A1:D1");
 
 // create the file
 wb.save( "test.01.xlsx", function(err) {
