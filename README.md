@@ -16,10 +16,11 @@ The main purpose is to create simple Excel files via JavaScript. The current imp
 6. Number formats for cells
 7. Fonts for cells
 8. Merge cells
+9. AutoFilter
 
 elxml allows to use string tables to save memory.
 
-Makes use of [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
+Uses [xmlbuilder-js](https://github.com/oozcitak/xmlbuilder-js),
 [archiver](https://github.com/ctalkington/node-archiver) and [underscore](https://github.com/jashkenas/underscore)
 
 
@@ -76,11 +77,8 @@ Lets set a date number format to see a better formatted date in Excel:
 // create a date format
 var dateFrmt = wb.addNumberFormat("dd/mm/yy;@");
 
-// create a default style
-var defStyle = wb.createStyle("Standard");
-
-// Note: Starting with 0.1.6 you should use
-// var defStyle = wb.getStyle("Standard");
+// get the predefined default style
+var defStyle = wb.getStyle("Standard");
 
 // derive a new style from the default style
 var dateStyle = wb.addStyle(defStyle, {numFrmt: dateFrmt});
@@ -134,7 +132,7 @@ Note that this must be done for every cell as inline strings are the default.
 ```javascript
 // add a cell with a string value
 var cell = row.addCell("D",excel.CELL_TYPE_STRING_TAB);
-cell.setValue("Hello World!);
+cell.setValue("Hello World!");
 ```
 
 This will save memory while saving and speed up loading of the created Excel file.
@@ -221,6 +219,10 @@ sheet.setAutoFilter("A1:D1");
 0.2.0 - add Workbook.saveToStream to save the resulting ZIP directly to a file stream  
 0.2.1 - fixed issue with wrong style IDs  
 0.3.0 - add basic support for AutoFilter, fixed error in string table  
+0.3.1 - add Row.setStyleForAllCells convenience method  
+  
+  
+
 
 
 

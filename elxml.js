@@ -939,6 +939,15 @@ Row.prototype = {
         this.cells.push(cell);
         return cell;
     },
+    /**
+     * @param style {CellStyle} to apply for the cells of the row
+     * @desc Assigns the given style to all cells the row currently(!) holds.
+     */
+    setStyleForAllCells : function(style) {
+        this.cells.forEach(function(cell) {
+            cell.setStyle(style);
+        })  
+    },
     save : function(sheetData) {
         var ele = sheetData.ele("row");
         ele.att("r", this.index);

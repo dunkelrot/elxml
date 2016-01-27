@@ -113,9 +113,14 @@ cell.setValue("123");
 cell = afSheet.addRow(3).addCell("C",excel.CELL_TYPE_STRING);
 cell.setValue("456");
 
-cell = afSheet.addRow(4).addCell("D",excel.CELL_TYPE_STRING_TAB);
+var row4 = afSheet.addRow(4);
+row4.addCell("A",excel.CELL_TYPE_STRING_TAB);
+row4.addCell("B",excel.CELL_TYPE_STRING_TAB);
+row4.addCell("C",excel.CELL_TYPE_STRING_TAB);
+
+cell = row4.addCell("D",excel.CELL_TYPE_STRING_TAB);
 cell.setValue("789");
-cell.setStyle(redFillStyle);
+row4.setStyleForAllCells(redFillStyle);
 
 afSheet.setAutoFilter("A1:D1");
 
