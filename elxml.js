@@ -143,7 +143,7 @@ exports.CELL_TYPE_FORMULA  = "str";
 
 /**
  * @constant CELL_FORMULA_NORMAL
- * @desc type of formula 
+ * @desc type of formula
  */
 exports.CELL_FORMULA_NORMAL = "normal";
 
@@ -255,7 +255,7 @@ function _writeCellStyles(cellStyles, styles) {
 
 /**
  * The AutoFilter definition for a single column.
- * 
+ *
  * @param colId
  * @constructor
  */
@@ -307,7 +307,7 @@ FilterColumn.prototype = {
         xFilterColumn.att("colId", this.colId);
         xFilterColumn.att("hiddenButton", this.hiddenButton);
         xFilterColumn.att("showButton", this.showButton);
-        
+
         if (this.colorFilter != null) {
             xFilterColumn.ele("colorFilter")
                 .att("dxfId", this.colorFilter.fill.getDxfsId())
@@ -326,7 +326,7 @@ AutoFilter.prototype = {
     /**
      * Add a filter definition for the given column within the AutoFilter range
      * NOTE: As far as I know there is no way to let Excel apply the filter upon loading the file.
-     * 
+     *
      * @param colId zero based ID
      * @returns {FilterColumn}
      */
@@ -462,6 +462,7 @@ function Font(opts, id) {
     this.size = opts.size;
     this.bold = opts.bold;
     this.italic = opts.italic;
+    this.underline = opts.underline;
     this.color = opts.color;
     this.id = id;
 }
@@ -477,12 +478,15 @@ Font.prototype = {
         if (this.italic) {
             font.ele("i");
         }
+        if (this.underline) {
+            font.ele("u");
+        }
         if (this.color != undefined) {
             this.color.save(font,"color");
         }
     },
     clone : function() {
-        var font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, color:this.color}, this.id);
+        var font = new Font({name:this.name, size:this.size, bold:this.bold, italic:this.italic, underline:this.underline, color:this.color}, this.id);
         return font;
     }
 };
@@ -490,7 +494,7 @@ function Fonts() {
     this.fontId = 0;
     this.fonts = [];
     // create a default font
-    this.defaultOpts = {bold: false, italic: false, size: 11, name:"Calibri"};
+    this.defaultOpts = {bold: false, italic: false, underline: false, size: 11, name:"Calibri"};
     this.addFont(this.defaultOpts);
 }
 Fonts.prototype = {
@@ -508,6 +512,7 @@ Fonts.prototype = {
         _.defaults(opts, this.defaultOpts);
         newFont.bold = opts.bold;
         newFont.italic = opts.italic;
+        newFont.underline = opts.underline;
         newFont.size = opts.size;
         newFont.name = opts.name;
         newFont.color = opts.color;
@@ -781,7 +786,7 @@ CellStyles.prototype = {
     /**
      * Creates a new style based on an existing style.
      * The new style gets a name like "elxmlStyle_id" where id is the unique style id.
-     * 
+     *
      * @param cellStyle     the style to derive from
      * @param opts          options for the new style
      * @returns {CellStyle} the new style
@@ -789,10 +794,10 @@ CellStyles.prototype = {
     derive : function(cellStyle, opts) {
         opts = (opts == undefined ? {} : opts);
         _.defaults(opts, {numFormat: null, fill: null, font: null, border: null});
-        
+
         var style = new CellStyle("elxmlStyle_" + this.nextStyleId, this.nextStyleId);
         this.nextStyleId++;
-        
+
         style.apply(cellStyle);
 
         if (opts.numFormat != null) {
@@ -946,7 +951,7 @@ Row.prototype = {
     setStyleForAllCells : function(style) {
         this.cells.forEach(function(cell) {
             cell.setStyle(style);
-        })  
+        })
     },
     save : function(sheetData) {
         var ele = sheetData.ele("row");
@@ -1036,9 +1041,9 @@ Sheet.prototype = {
         return merge;
     },
     /**
-     * 
+     *
      * @param range {string} range identifier (eg. 'A1:B2'), if null auto filter is disabled
-     * @desc enable auto filter for the given range 
+     * @desc enable auto filter for the given range
      */
     setAutoFilter : function(range) {
         if (range == null) {
@@ -1081,7 +1086,7 @@ Sheet.prototype = {
  * @constructor
  * @class
  * @param opts  options - standard:true = create a "Standard" style
- * 
+ *
  * Each Workbook has a default CellStyle named "Standard", use this to derive
  * new styles.
  */
@@ -1091,12 +1096,12 @@ function Workbook (opts) {
 
     this.sheets = [];
     this.relID = 1;
-    
+
     this.styles = new CellStyles();
     if (opts.standard == true) {
         this.styles.create("Standard");
     }
-    
+
     this.numberFormats = new NumberFormats();
     this.fills = new Fills();
     this.fonts = new Fonts();
@@ -1118,7 +1123,7 @@ Workbook.prototype = {
     },
     /**
      * Returns a style by name.
-     * @param name  
+     * @param name
      * @returns {*|null}
      */
     getStyle : function(name) {
@@ -1315,7 +1320,7 @@ Workbook.prototype = {
 
         archive.finalize();
     },
-    
+
     // internal stuff below this line
     _saveContents : function( archive ) {
         var contents = builder.create("Types",{version: '1.0', encoding: 'utf-8'});
@@ -1350,7 +1355,7 @@ Workbook.prototype = {
         });
 
         workbookRelations.ele("calcPr").att("fullCalcOnLoad",true);
-        
+
         var xmlString = workbookRelations.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "workbook.xml" });
     },
@@ -1409,10 +1414,8 @@ Workbook.prototype = {
         _writeCellStyles(cellStyles, this.styles.getStyles());
 
         this.fills.saveDxfs(stylesheet);
-        
+
         var xmlString = stylesheet.end({ pretty: false });
         archive.append( xmlString, { name: zipFolder + "/" + "styles.xml" });
     }
 };
-
-
